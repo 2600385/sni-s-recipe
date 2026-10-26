@@ -122,7 +122,7 @@ function renderEnter() {
       <input id="recipe-code" class="code-input" type="text" inputmode="numeric" autocomplete="off" placeholder="비밀 레시피" required>
       <button type="submit" class="primary-btn">레시피 열기</button>
       <div class="error" id="enter-err" role="alert" hidden></div>
-      <div class="hint">${db.isDemo ? '지금은 예시 모드라 아무 글자나 넣어도 열려요.' : '레시피를 아는 사람만 들어올 수 있어요.'}</div>
+      <div class="hint">${db.isDemo ? (window.SNI_CONFIG && !window.SNI_CONFIG.demo ? '창고 연결 도구를 불러오지 못해 예시 모드로 열렸어요. 회사망에서 막혔을 수 있어요.' : '지금은 예시 모드라 아무 글자나 넣어도 열려요.') : '레시피를 아는 사람만 들어올 수 있어요.'}</div>
     </form>
   </section>`;
   const form = document.getElementById('enter-form');

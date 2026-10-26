@@ -154,8 +154,17 @@ const live = {
   },
   async signIn(code) {
     if (!code) throw new Error('비밀 레시피를 넣어주세요.');
-    const { error } = await sb.auth.signInWithPassword({ email: cfg.email, password: code });
-    if (error) throw new Error(error.status === 429 ? '너무 여러 번 시도했어요. 잠시 뒤에 다시 해주세요.' : '레시피가 맞지 않아요.');
+    let res;
+    try {
+      res = await sb.auth.signInWithPassword({ email: cfg.email, password: code });
+    } catch (e) {
+      throw new Error('창고에 연결하지 못했어요. 회사망에서 막혔을 수 있으니 휴대폰 데이터로 열어보세요.');
+    }
+    const error = res.error;
+    if (!error) return;
+    if (error.status === 429) throw new Error('너무 여러 번 시도했어요. 잠시 뒤에 다시 해주세요.');
+    if (error.status === 400) throw new Error('레시피가 맞지 않아요.');
+    throw new Error('창고에 연결하지 못했어요 (' + (error.status || error.name || '네트워크') + '). 회사망에서 막혔을 수 있으니 휴대폰 데이터로 열어보세요.');
   },
   async signOut() { setSecretHeader(''); await sb.auth.signOut(); },
   lockSecret() { setSecretHeader(''); },
