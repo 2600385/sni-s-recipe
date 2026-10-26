@@ -71,7 +71,7 @@ let signedIn = false;
 const demo = {
   async getSession() { return signedIn; },
   async signIn(code) {
-    if (!code) throw new Error('비밀 레시피를 넣어주세요.');
+    if (!code) throw new Error('사번을 넣어주세요.');
     signedIn = true; // 아무 코드나 통과
   },
   async signOut() { signedIn = false; },
@@ -153,9 +153,9 @@ const live = {
     return !!data.session;
   },
   async signIn(code) {
-    if (!code) throw new Error('비밀 레시피를 넣어주세요.');
+    if (!code) throw new Error('사번을 넣어주세요.');
     const { error } = await sb.auth.signInWithPassword({ email: cfg.email, password: code });
-    if (error) throw new Error(error.status === 429 ? '너무 여러 번 시도했어요. 잠시 뒤에 다시 해주세요.' : '레시피가 맞지 않아요.');
+    if (error) throw new Error(error.status === 429 ? '너무 여러 번 시도했어요. 잠시 뒤에 다시 해주세요.' : '등록된 사번이 아니에요.');
   },
   async signOut() { setSecretHeader(''); await sb.auth.signOut(); },
   lockSecret() { setSecretHeader(''); },

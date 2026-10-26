@@ -118,11 +118,11 @@ function renderEnter() {
     </div>
     <form class="enter-card" id="enter-form" novalidate>
       ${bear(64, 'peek')}
-      <label for="recipe-code">비밀 레시피를 넣어주세요</label>
-      <input id="recipe-code" class="code-input" type="password" autocomplete="current-password" placeholder="••••••" required>
+      <label for="recipe-code">사번을 넣어주세요</label>
+      <input id="recipe-code" class="code-input" type="text" inputmode="numeric" autocomplete="username" placeholder="사번" required>
       <button type="submit" class="primary-btn">레시피 열기</button>
       <div class="error" id="enter-err" role="alert" hidden></div>
-      <div class="hint">${db.isDemo ? '지금은 예시 모드라 아무 글자나 넣어도 열려요.' : '레시피를 아는 사람만 들어올 수 있어요.'}</div>
+      <div class="hint">${db.isDemo ? '지금은 예시 모드라 아무 글자나 넣어도 열려요.' : '사번으로 바로 들어가요.'}</div>
     </form>
   </section>`;
   const form = document.getElementById('enter-form');
