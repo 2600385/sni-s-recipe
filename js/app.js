@@ -121,7 +121,7 @@ function renderEnter() {
     <form class="enter-card" id="enter-form" novalidate>
       ${bear(64, 'peek')}
       <label for="recipe-code">비밀 레시피를 넣어주세요</label>
-      <input id="recipe-code" class="code-input" type="text" inputmode="numeric" autocomplete="off" required>
+      <input id="recipe-code" class="code-input" type="password" inputmode="numeric" autocomplete="current-password" required>
       <button type="submit" class="primary-btn">레시피 열기</button>
       <div class="error" id="enter-err" role="alert" hidden></div>
       <div class="hint">${db.isDemo ? (window.SNI_CONFIG && !window.SNI_CONFIG.demo ? '창고 연결 도구를 불러오지 못해 예시 모드로 열렸어요. 회사망에서 막혔을 수 있어요.' : '지금은 예시 모드라 아무 글자나 넣어도 열려요.') : '스니 전용 주방이에요. 오늘도 수고했어요!'}</div>
