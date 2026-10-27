@@ -10,21 +10,21 @@ const SOURCES = [
 
 // 내용 종류 (항목마다 여러 개 체크, items.pockets에 저장)
 const POCKETS = [
+  { id: 'edu', label: '교육자료' },
+  { id: 'tool', label: '툴' },
   { id: 'brochure', label: '브로셔' },
-  { id: 'simul', label: '시뮬레이션' },
-  { id: 'notice', label: '공문' },
-  { id: 'edu', label: '교육자료' }
+  { id: 'notice', label: '공문' }
 ];
 
 // 둘째 줄: 어떤 걸 찾아? URL·PDF는 파일 형식, 나머지는 내용 종류
 const FTYPES = [
   { id: 'all', label: '전체' },
+  { id: 'edu', label: '교육자료' },
+  { id: 'tool', label: '툴' },
   { id: 'brochure', label: '브로셔' },
   { id: 'URL', label: 'URL' },
   { id: 'PDF', label: 'PDF' },
-  { id: 'simul', label: '시뮬레이션' },
-  { id: 'notice', label: '공문' },
-  { id: 'edu', label: '교육자료' }
+  { id: 'notice', label: '공문' }
 ];
 
 const TOOL_KINDS = [
@@ -47,12 +47,12 @@ const NOTE_TABS = {
 };
 
 const SAMPLE = [
-  { id: 't1', section: 'tool', title: '일만사 수익 시뮬레이터', kind: 'HTML', url: '', mine: true, pockets: ['simul'], desc: '환자 수를 넣으면 일만사 예상 수익과 혈액검사 패키지 금액을 바로 보여줍니다.' },
-  { id: 't2', section: 'tool', title: '일만사 등록 이지플래너', kind: 'HTML', url: '', mine: true, pockets: ['simul'], desc: '원장님께 일만사 수가 수입을 한눈에 보여주는 상담용 화면입니다.' },
+  { id: 't1', section: 'tool', title: '일만사 수익 시뮬레이터', kind: 'HTML', url: '', mine: true, pockets: ['tool'], desc: '환자 수를 넣으면 일만사 예상 수익과 혈액검사 패키지 금액을 바로 보여줍니다.' },
+  { id: 't2', section: 'tool', title: '일만사 등록 이지플래너', kind: 'HTML', url: '', mine: true, pockets: ['tool'], desc: '원장님께 일만사 수가 수입을 한눈에 보여주는 상담용 화면입니다.' },
   { id: 't3', section: 'tool', title: '검진센터 제안 브로셔', kind: 'HTML', url: '', mine: true, pockets: ['brochure'], desc: '병원명과 담당자명을 입력하면 거래처 맞춤 일만사 제안 포스터가 만들어집니다.' },
-  { id: 't4', section: 'tool', title: 'AX004 청구증대 툴', kind: 'HTML', url: 'https://ax004-claim-tool.netlify.app', mine: true, pockets: [], desc: '환자는 많은데 교육상담 청구가 낮은 거래처를 찾아냅니다.' },
-  { id: 't5', section: 'tool', title: '청구현황 대시보드', kind: 'HTML', url: '', mine: true, pockets: [], desc: '사무소별 청구 순위, 월별 추이, 담당자별 현황을 탭으로 봅니다.' },
-  { id: 't6', section: 'tool', title: '경인1 거래처 현황판', kind: 'HTML', url: '', mine: true, pockets: [], desc: '거래처별 방문 기록, 담당자 배정, 웰체크·일만사 참여 현황을 관리합니다.' },
+  { id: 't4', section: 'tool', title: 'AX004 청구증대 툴', kind: 'HTML', url: 'https://ax004-claim-tool.netlify.app', mine: true, pockets: ['tool'], desc: '환자는 많은데 교육상담 청구가 낮은 거래처를 찾아냅니다.' },
+  { id: 't5', section: 'tool', title: '청구현황 대시보드', kind: 'HTML', url: '', mine: true, pockets: ['tool'], desc: '사무소별 청구 순위, 월별 추이, 담당자별 현황을 탭으로 봅니다.' },
+  { id: 't6', section: 'tool', title: '경인1 거래처 현황판', kind: 'HTML', url: '', mine: true, pockets: ['tool'], desc: '거래처별 방문 기록, 담당자 배정, 웰체크·일만사 참여 현황을 관리합니다.' },
   { id: 't7', section: 'tool', title: '예시 · 심평원 업무포털', kind: 'URL', url: '', mine: false, pockets: [], desc: '저장해 둔 외부 사이트 예시입니다. 실제 주소로 바꿔 넣으세요.' },
   { id: 't8', section: 'tool', title: '예시 · 일만사 사업 지침', kind: 'PDF', url: '', mine: false, pockets: ['notice'], desc: '저장해 둔 PDF 자료 예시입니다. 실제 파일로 바꿔 넣으세요.' },
   { id: 't10', section: 'tool', title: '예시 · 일만사 제안 BD', kind: 'PDF', url: '', mine: false, pockets: ['brochure'], desc: '원장님께 드리는 일만사 소개 BD 예시입니다. 실제 파일로 바꿔 넣으세요.' },

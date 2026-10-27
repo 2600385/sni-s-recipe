@@ -45,7 +45,7 @@ const ICONS = {
 };
 // 곰 셰프: 곰 얼굴 + 요리사 모자
 const bear = (size, cls = '') => `<svg class="bear ${cls}" width="${size}" height="${Math.round(size * 1.1)}" viewBox="0 0 100 110" aria-hidden="true">
-  <g stroke="#0A5A8F" stroke-width="4" stroke-linejoin="round">
+  <g stroke="#3D4450" stroke-width="4" stroke-linejoin="round">
     <circle cx="22" cy="58" r="13" fill="#D9A273"/><circle cx="78" cy="58" r="13" fill="#D9A273"/>
     <circle cx="22" cy="58" r="6" fill="#F3D6B8" stroke="none"/><circle cx="78" cy="58" r="6" fill="#F3D6B8" stroke="none"/>
     <ellipse cx="50" cy="74" rx="34" ry="31" fill="#D9A273"/>
@@ -113,7 +113,7 @@ function topbar(back) {
 // ---------- 입장 ----------
 function renderEnter() {
   app.innerHTML = `<section class="enter">
-    <svg class="wand" aria-hidden="true" width="70" height="120" viewBox="0 0 120 220"><rect x="53" y="62" width="14" height="150" rx="7" fill="#FFFFFF" stroke="#0A5A8F" stroke-width="5"/><path d="M55 92l10-10M55 122l10-10M55 152l10-10M55 182l10-10" stroke="#8FD3F7" stroke-width="5" stroke-linecap="round"/><path d="M60 2l14 30 33 5-24 23 6 33-29-16-29 16 6-33-24-23 33-5z" fill="#FFC94D" stroke="#0A5A8F" stroke-width="5" stroke-linejoin="round"/></svg>
+    <svg class="wand" aria-hidden="true" width="70" height="120" viewBox="0 0 120 220"><rect x="53" y="62" width="14" height="150" rx="7" fill="#FFFFFF" stroke="#3D4450" stroke-width="5"/><path d="M55 92l10-10M55 122l10-10M55 152l10-10M55 182l10-10" stroke="#8FD3F7" stroke-width="5" stroke-linecap="round"/><path d="M60 2l14 30 33 5-24 23 6 33-29-16-29 16 6-33-24-23 33-5z" fill="#FFC94D" stroke="#3D4450" stroke-width="5" stroke-linejoin="round"/></svg>
     <div>
       <div class="eyebrow">${NAME.eyebrow}</div>
       <h1 class="sticker-title">${NAME.full}</h1>
@@ -227,7 +227,7 @@ function renderPocket() {
         </span>
       </button>
       <div class="wand-x" aria-hidden="true"><div class="wand-y">
-        <svg viewBox="0 0 120 232" style="display:block;width:100%;overflow:visible"><rect x="53" y="6" width="14" height="150" rx="7" fill="#FFFFFF" stroke="#0A5A8F" stroke-width="4"/><path d="M55 36l10-10M55 66l10-10M55 96l10-10M55 126l10-10" stroke="#8FD3F7" stroke-width="5" stroke-linecap="round"/><g transform="translate(0,134)"><path d="M60 2l14 30 33 5-24 23 6 33-29-16-29 16 6-33-24-23 33-5z" fill="#FFC94D" stroke="#0A5A8F" stroke-width="5" stroke-linejoin="round"/><circle cx="50" cy="42" r="5" fill="#FFFFFF" opacity=".9"/></g></svg>
+        <svg viewBox="0 0 120 232" style="display:block;width:100%;overflow:visible"><rect x="53" y="6" width="14" height="150" rx="7" fill="#FFFFFF" stroke="#3D4450" stroke-width="4"/><path d="M55 36l10-10M55 66l10-10M55 96l10-10M55 126l10-10" stroke="#8FD3F7" stroke-width="5" stroke-linecap="round"/><g transform="translate(0,134)"><path d="M60 2l14 30 33 5-24 23 6 33-29-16-29 16 6-33-24-23 33-5z" fill="#FFC94D" stroke="#3D4450" stroke-width="5" stroke-linejoin="round"/><circle cx="50" cy="42" r="5" fill="#FFFFFF" opacity=".9"/></g></svg>
       </div></div>
       <div class="swirl-cap">요술봉이 휘휘 젓는 중. 누르면 다시 뾱!</div>
     </div>
@@ -236,7 +236,7 @@ function renderPocket() {
         <div class="crow"><span class="clabel">어디 자료?</span><div class="candies" id="balls"></div></div>
         <div class="search">
           <label for="pq" class="sr-only">툴 검색</label>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A5A8F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D4450" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
           <input id="pq" type="search" placeholder="툴 이름으로 찾기" value="${esc(state.pq)}">
         </div>
       </div>
@@ -289,7 +289,7 @@ function paintTiles() {
   let html = list.map((d, i) => {
     const f = FLY[i % FLY.length];
     return `<button type="button" class="tile${state.picked === d.id ? ' on' : ''}" data-pick="${d.id}" style="--dx:${f[0]}px;--r:${f[1]}deg;margin-top:${f[2]}px;animation-delay:${(i * 0.09).toFixed(2)}s"><span style="animation-duration:${(3.1 + (i % 5) * 0.3).toFixed(1)}s">
-      ${kindTag(d.kind)}${icon(d.kind, 44, '#0A6AA8')}<span class="nm">${esc(d.title)}</span></span></button>`;
+      ${kindTag(d.kind)}${icon(d.kind, 44, '#4A5260')}<span class="nm">${esc(d.title)}</span></span></button>`;
   }).join('');
   if (!list.length) html = `<div class="bubble">${state.pq.trim() ? '찾는 툴이 없어요' : '이 조합에 맞는 툴이 아직 없어요'}</div>`;
   if (state.secretView) html += '<button type="button" class="relock" data-act="relock" style="flex-basis:100%;max-width:160px">다시 잠그기</button>';
@@ -349,7 +349,7 @@ function stir(next) {
     const fx = document.getElementById('swirl-fx');
     if (fx && pocketList()) {
       fx.innerHTML = `<div class="pf" style="left:8%;top:-34px;--r:-14deg;font-size:40px;color:#E4572E;animation-delay:.1s">뾱!</div>
-        <div class="pf" style="right:6%;top:-50px;--r:12deg;font-size:30px;color:#0A5A8F;animation-delay:.35s">뾰뿁!</div>
+        <div class="pf" style="right:6%;top:-50px;--r:12deg;font-size:30px;color:#3D4450;animation-delay:.35s">뾰뿁!</div>
         <svg class="sp" width="26" height="26" viewBox="0 0 24 24" style="left:30%;--dx:-90px;--dy:-120px;animation-delay:.1s"><path d="${STAR}" fill="#FF9F45"/></svg>
         <svg class="sp" width="20" height="20" viewBox="0 0 24 24" style="left:48%;--dx:10px;--dy:-150px;animation-delay:.2s"><path d="${STAR}" fill="#FFFFFF"/></svg>
         <svg class="sp" width="28" height="28" viewBox="0 0 24 24" style="left:62%;--dx:100px;--dy:-110px;animation-delay:.3s"><path d="${STAR}" fill="#FF9F45"/></svg>`;
@@ -421,7 +421,7 @@ function renderNotes() {
           </span>
         </button>
         <div class="nwand-x" aria-hidden="true"><div class="nwand-y">
-          <svg viewBox="0 0 120 232" style="display:block;width:100%;overflow:visible"><rect x="53" y="6" width="14" height="150" rx="7" fill="#FFFFFF" stroke="#0A5A8F" stroke-width="4"/><path d="M55 36l10-10M55 66l10-10M55 96l10-10M55 126l10-10" stroke="#F5A8C8" stroke-width="5" stroke-linecap="round"/><g transform="translate(0,134)"><path d="M60 2l14 30 33 5-24 23 6 33-29-16-29 16 6-33-24-23 33-5z" fill="#FFC94D" stroke="#0A5A8F" stroke-width="5" stroke-linejoin="round"/><circle cx="50" cy="42" r="5" fill="#FFFFFF" opacity=".9"/></g></svg>
+          <svg viewBox="0 0 120 232" style="display:block;width:100%;overflow:visible"><rect x="53" y="6" width="14" height="150" rx="7" fill="#FFFFFF" stroke="#3D4450" stroke-width="4"/><path d="M55 36l10-10M55 66l10-10M55 96l10-10M55 126l10-10" stroke="#F5A8C8" stroke-width="5" stroke-linecap="round"/><g transform="translate(0,134)"><path d="M60 2l14 30 33 5-24 23 6 33-29-16-29 16 6-33-24-23 33-5z" fill="#FFC94D" stroke="#3D4450" stroke-width="5" stroke-linejoin="round"/><circle cx="50" cy="42" r="5" fill="#FFFFFF" opacity=".9"/></g></svg>
         </div></div>
         <div class="book-cap">요술봉이 휙휙 넘기는 중. 누르면 다시 촤라락!</div>
       </div>
@@ -453,7 +453,7 @@ function flipBook() {
   void stage.offsetWidth;
   stage.classList.add('flipping');
   document.getElementById('book-fx').innerHTML = `<div class="pf" style="left:4%;top:-30px;--r:-12deg;font-size:34px;color:#B0477A;animation-delay:.15s">촤라락!</div>
-    <div class="pf" style="right:4%;top:-44px;--r:10deg;font-size:28px;color:#0A5A8F;animation-delay:.4s">뾰로롱!</div>
+    <div class="pf" style="right:4%;top:-44px;--r:10deg;font-size:28px;color:#3D4450;animation-delay:.4s">뾰로롱!</div>
     <svg class="sp" width="24" height="24" viewBox="0 0 24 24" style="left:28%;--dx:-80px;--dy:-110px;animation-delay:.2s"><path d="${STAR}" fill="#FFB7D5"/></svg>
     <svg class="sp" width="18" height="18" viewBox="0 0 24 24" style="left:50%;--dx:0px;--dy:-140px;animation-delay:.3s"><path d="${STAR}" fill="#FFFFFF"/></svg>
     <svg class="sp" width="26" height="26" viewBox="0 0 24 24" style="left:66%;--dx:90px;--dy:-100px;animation-delay:.35s"><path d="${STAR}" fill="#FFE27A"/></svg>`;
@@ -496,7 +496,7 @@ function renderSecret() {
   app.innerHTML = `<div class="wrap secret-screen">
     ${topbar(true)}
     <section class="notes-head"><div>
-      <div class="ttl"><span class="ic" style="background:#0A5A8F;color:#FFFFFF">${LOCK.replace('width="20" height="20"', 'width="28" height="28"')}</span><h1 style="color:#0A5A8F">시크릿 서랍</h1></div>
+      <div class="ttl"><span class="ic" style="background:#3D4450;color:#FFFFFF">${LOCK.replace('width="20" height="20"', 'width="28" height="28"')}</span><h1 style="color:#3D4450">시크릿 서랍</h1></div>
       <p>툴 주머니와 레시피 노트에서 "시크릿"으로 넣은 것만 모여 있어요.</p>
     </div></section>
     ${body}
