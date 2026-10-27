@@ -306,6 +306,8 @@ body.is-pocket .bg .blob { opacity: .7; }
 }
 textarea.field-input { padding: 12px 14px; min-height: 110px; resize: vertical; line-height: 1.6; }
 select.field-input { appearance: auto; }
+/* 한글이 써지도록 일반 칸을 쓰고 글자만 가린다 (맥 비밀번호 칸은 한글 입력이 막힘) */
+.field-input.masked { -webkit-text-security: disc; text-security: disc; }
 
 .swirl-box { position: relative; z-index: 2; width: 100%; max-width: 360px; margin-top: 72px; }
 .swirl-fx { position: absolute; left: 0; right: 0; top: 0; height: 0; }

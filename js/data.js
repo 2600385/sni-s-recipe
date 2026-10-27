@@ -108,7 +108,8 @@ const BUCKET = 'files';
 // 서랍 비밀번호가 확인되면 모든 요청에 실어 보내 시크릿 행을 다룰 수 있게 한다
 function setSecretHeader(pw) {
   if (!sb) return;
-  if (pw) sb.rest.headers['x-secret-pw'] = pw;
+  // 요청 헤더에는 한글을 실을 수 없어 UTF-8 → base64로 보낸다 (창고의 secret_ok가 되돌린다)
+  if (pw) sb.rest.headers['x-secret-pw'] = btoa(String.fromCharCode(...new TextEncoder().encode(pw)));
   else delete sb.rest.headers['x-secret-pw'];
 }
 

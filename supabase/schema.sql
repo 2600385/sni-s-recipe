@@ -39,10 +39,17 @@ security definer
 set search_path = ''
 as $$
 declare
-  pw text := coalesce((current_setting('request.headers', true))::json ->> 'x-secret-pw', '');
+  raw text := coalesce((current_setting('request.headers', true))::json ->> 'x-secret-pw', '');
+  pw text;
   h text;
 begin
-  if pw = '' then return false; end if;
+  if raw = '' then return false; end if;
+  -- 화면은 한글 비밀번호를 base64로 보낸다
+  begin
+    pw := convert_from(decode(raw, 'base64'), 'UTF8');
+  exception when others then
+    return false;
+  end;
   select c.pw_hash into h from public.secret_config c where c.owner = auth.uid();
   return h is not null and extensions.crypt(pw, h) = h;
 end;

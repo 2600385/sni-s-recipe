@@ -378,7 +378,7 @@ function lockCard(where) {
     <div class="t">${LOCK}시크릿 서랍</div>
     <div class="s">원장님 앞에서 화면을 띄울 때 보이면 안 되는 툴과 기록이 들어 있어요.</div>
     <label for="secret-pw-${where}">비밀번호</label>
-    <input id="secret-pw-${where}" class="field-input" type="password" autocomplete="off">
+    <input id="secret-pw-${where}" class="field-input masked" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="한글도 돼요">
     <div class="error" role="alert" hidden></div>
     <button type="submit" class="open-btn">열려라 참깨</button>
   </form>`;
