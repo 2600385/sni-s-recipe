@@ -84,7 +84,8 @@ async function reload() {
 }
 
 // ---------- 라우팅 ----------
-const routes = { enter: renderEnter, home: renderHome, pocket: renderPocket, notes: renderNotes, secret: renderSecret };
+// 나만 쓰는 공간이라 시크릿 서랍은 화면에서 뺐다 (창고 기능은 남아 있음)
+const routes = { enter: renderEnter, home: renderHome, pocket: renderPocket, notes: renderNotes };
 
 async function route() {
   const name = (location.hash.replace(/^#\/?/, '') || 'home').split('?')[0];
@@ -227,7 +228,7 @@ function renderPocket() {
     <div class="pocket-tools">
       <div class="prow">
         <div class="crow"><span class="clabel">어디에 쓸까</span><div class="balls" id="balls"></div></div>
-        <div class="specials"><span id="making"></span><button type="button" class="secret-pill" id="secret-pill" data-act="secret-view"></button></div>
+        <div class="specials"><span id="making"></span></div>
       </div>
       <div class="prow">
         <div class="crow crow-scroll"><span class="clabel">어떤 재료</span><div class="candies" id="candies"></div></div>
@@ -268,10 +269,6 @@ function paintCandies() {
   };
   document.getElementById('making').innerHTML = candy(FTYPES.find((f) => f.id === 'mine'), 0);
   document.getElementById('candies').innerHTML = FTYPES.filter((f) => f.id !== 'mine').map((f, i) => candy(f, i + 1)).join('');
-  const pill = document.getElementById('secret-pill');
-  pill.classList.toggle('on', state.secretView);
-  pill.setAttribute('aria-pressed', state.secretView);
-  pill.innerHTML = `${LOCK}시크릿 서랍${state.secretView ? ' 닫기' : ''}`;
 }
 
 function paintTiles() {
@@ -435,7 +432,6 @@ function renderNotes() {
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E2E5C" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
         <input id="nq" type="search" placeholder="제목으로 찾기 (예: 인수인계, 월례)" value="${esc(state.noteQ)}">
       </div>
-      <a href="#/secret" class="secret-pill">${LOCK}시크릿 서랍</a>
     </div>
     <div class="sub-tabs" id="sub-tabs"></div>
     <section style="display:flex;flex-direction:column;gap:10px">
@@ -533,7 +529,6 @@ function openSheet(section, edit) {
       <div class="f" id="f-cat"><label for="add-cat">분류</label><select id="add-cat" name="cat" class="field-input">${noteOpts}</select></div>
       <div class="f" id="f-date"><label for="add-date">날짜</label><input id="add-date" name="date" class="field-input" type="text" placeholder="예: 2026.10"></div>
       <p class="note" id="f-sensitive">거래처 실명, 동료 평가가 들어간 문서는 파일 대신 사내 드라이브 링크로 넣어주세요.</p>
-      <label class="opts"><span><input type="checkbox" name="secret"> 시크릿 서랍에 넣기 (비밀번호를 넣어야 보임)</span></label>
       <div class="error" id="add-err" role="alert" hidden></div>
       <div class="btns"><button type="submit" class="go-btn">${edit ? '고치기 완료' : '쇽! 넣기'}</button><button type="button" class="ghost-btn" data-act="close-sheet">취소</button></div>
     </form>
@@ -575,7 +570,6 @@ function openSheet(section, edit) {
     form.querySelector('input[name=mine]').checked = !!edit.mine;
     if (edit.tab) document.getElementById('add-cat').value = `${edit.tab}/${edit.sub}`;
     document.getElementById('add-date').value = edit.date || '';
-    form.querySelector('input[name=secret]').checked = !!edit.secret;
     if (edit.filePath) document.querySelector('#f-file label').textContent = '파일 (새로 고르면 바꿔요)';
     sync();
   }
