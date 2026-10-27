@@ -116,39 +116,36 @@ body.is-pocket .bg .blob { opacity: .7; }
 .home-hero h2 { margin: 0; font-family: 'Jua', sans-serif; font-weight: 400; font-size: clamp(32px, 6vw, 46px); line-height: 1.2; }
 .home-hero p { margin: 6px 0 0; font-size: 17px; color: var(--ink-soft); }
 .pockets { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
-.pocket {
-  position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 14px; padding: 30px; border-radius: 32px;
-  background: #FFFFFF; box-shadow: 0 14px 30px rgba(10, 90, 143, .14); color: var(--ink); text-decoration: none;
-  transition: transform .2s cubic-bezier(.3, 1.5, .5, 1);
+/* A안: 반투명 유리 카드 */
+.pocket, .mini {
+  position: relative; background: rgba(255, 255, 255, .55); border: 1.5px solid rgba(255, 255, 255, .9);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 10px 30px rgba(120, 110, 200, .12);
+  color: var(--ink); text-decoration: none; transition: transform .2s cubic-bezier(.3, 1.5, .5, 1), background .2s;
 }
-.pocket:hover { transform: translateY(-4px); color: var(--ink); }
-.pocket .halo { position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; border-radius: 50%; background: var(--sky-soft); }
-.pocket .row1 { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.pocket .icon { width: 64px; height: 64px; border-radius: 22px; background: var(--navy); display: flex; align-items: center; justify-content: center; animation: bob 3.4s ease-in-out infinite; }
-.pocket .tag { font-size: 13px; font-weight: 700; color: var(--navy); background: var(--sky-soft); border-radius: 12px; padding: 4px 12px; }
-.pocket .name { position: relative; font-family: 'Jua', sans-serif; font-size: 34px; color: var(--navy); }
-.pocket p { position: relative; margin: 0; color: var(--muted); }
-.pocket .counts { position: relative; display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px; }
-.pocket .counts span { padding: 5px 12px; border-radius: 14px; background: #F3F8FD; }
-.pocket .go { position: relative; align-self: flex-start; display: inline-flex; align-items: center; min-height: 48px; padding: 0 22px; border-radius: 24px; background: var(--navy); color: #FFFFFF; font-family: 'Jua', sans-serif; font-size: 19px; }
-.pocket.notes .halo { background: var(--pink-soft); }
-.pocket.notes .icon { background: var(--plum-btn); animation-delay: .4s; }
-.pocket.notes .tag { color: var(--plum); background: var(--pink-soft); }
+.pocket { display: flex; flex-direction: column; gap: 12px; padding: 28px; border-radius: 30px; }
+.pocket:hover, .mini:hover { transform: translateY(-4px); background: rgba(255, 255, 255, .7); color: var(--ink); }
+.pocket .top { display: flex; align-items: center; gap: 14px; }
+.pocket .ic { width: 52px; height: 52px; border-radius: 18px; display: grid; place-items: center; background: linear-gradient(135deg, #D6ECFF, #E6DEFF); }
+.pocket .tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: #5B7C99; }
+.pocket .lockkey { margin-left: auto; width: 56px; height: 44px; border-radius: 16px; display: grid; place-items: center; background: rgba(255, 255, 255, .7); }
+.pocket .name { font-family: 'Jua', sans-serif; font-size: 30px; color: var(--navy); }
+.pocket p { margin: 0; color: var(--muted); font-size: 15px; }
+.pocket .bot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
+.pocket .counts { display: flex; flex-wrap: wrap; gap: 6px; }
+.pocket .counts span { font-size: 13px; padding: 4px 11px; border-radius: 12px; background: rgba(255, 255, 255, .75); color: #2F4E63; }
+.pocket .go { flex: none; font-family: 'Jua', sans-serif; font-size: 17px; color: var(--navy); background: #FFFFFF; border-radius: 20px; padding: 9px 18px; box-shadow: 0 4px 12px rgba(10, 90, 143, .12); }
+.pocket.notes .ic { background: linear-gradient(135deg, #FFE0EE, #FFE9D9); }
+.pocket.notes .tag { color: #A0607F; }
 .pocket.notes .name { color: var(--plum); }
-.pocket.notes .counts span { background: #FDF3F8; }
-.pocket.notes .go { background: var(--plum-btn); }
+.pocket.notes .go { color: var(--plum); }
 .minis { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-.mini {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 22px; border-radius: 24px; border: 0;
-  background: rgba(255, 255, 255, .8); color: var(--ink); text-align: left; font-size: 16px; text-decoration: none;
-}
-.mini:hover { background: #FFFFFF; color: var(--ink); }
+.mini { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 22px; border-radius: 24px; text-align: left; font-size: 16px; }
 .mini .t { display: flex; align-items: center; gap: 8px; font-weight: 700; }
 .mini .s { font-size: 14px; color: var(--muted); }
 .mini .l { font-size: 14px; font-weight: 700; color: var(--navy); }
 .add-tile {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 120px; padding: 22px;
-  border-radius: 24px; border: 2px dashed #7FC4EC; background: transparent; color: var(--navy); font-family: 'Jua', sans-serif; font-size: 20px;
+  border-radius: 24px; border: 2px dashed rgba(127, 196, 236, .9); background: rgba(255, 255, 255, .25); color: var(--navy); font-family: 'Jua', sans-serif; font-size: 20px;
 }
 .add-tile small { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--muted); }
 .add-tile:hover { background: rgba(255, 255, 255, .5); }

@@ -166,20 +166,17 @@ function renderHome() {
     </section>
     <section class="pockets">
       <a href="#/pocket" class="pocket rise r2">
-        <div class="halo" aria-hidden="true"></div>
-        <div class="row1"><span class="icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></span><span class="tag">재료</span></div>
+        <div class="top"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3E79B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></span><span class="tag">재료</span></div>
         <div class="name">툴 주머니</div>
-        <p>직접 만든 툴, BD, 링크, PDF, 표준멘트까지. 현장에서 꺼내 쓰는 재료들.</p>
-        <div class="counts"><span>전체 ${tools.length}개</span><span>스니's Tool ${mine}개</span></div>
-        <span class="go">주머니 열기</span>
+        <p>업무 툴 · 자료 모음집</p>
+        <div class="bot"><div class="counts"><span>전체 ${tools.length}</span><span>스니's ${mine}</span></div><span class="go">열기 →</span></div>
       </a>
       <a href="#/notes" class="pocket notes rise r3">
-        <div class="halo" aria-hidden="true"></div>
-        <div class="row1"><span class="icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2zM4 17a2 2 0 0 1 2-2h12"/><path d="M12 6.5l1 2.2 2.4.3-1.8 1.6.5 2.4-2.1-1.2-2.1 1.2.5-2.4-1.8-1.6 2.4-.3z"/></svg></span><span class="tag">기록</span></div>
+        <div class="top"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B0477A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2zM4 17a2 2 0 0 1 2-2h12"/></svg></span><span class="tag">기록</span>
+          <span class="lockkey" title="나만 보는 기록"><svg width="40" height="30" viewBox="0 0 40 30" fill="none" stroke="#B0477A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="13" width="16" height="13" rx="3" fill="#FFE6F0"/><path d="M7 13V9a4 4 0 0 1 8 0v4"/><circle cx="11" cy="19.5" r="1.6" fill="#B0477A" stroke="none"/><circle cx="29" cy="10" r="4.5" fill="#FFF3D6" stroke="#C9871E"/><path d="M29 14.5V26M29 21h3.5M29 24.5h2.5" stroke="#C9871E"/></svg></span></div>
         <div class="name">레시피 노트</div>
-        <p>보고서, 일일보고, 월별 피드백, 인수인계서, 발표 PPT까지. 내가 직접 쓴 기록들.</p>
-        <div class="counts"><span>보고서 ${nReport}건</span><span>발표용 ${nPres}건</span></div>
-        <span class="go">노트 펼치기</span>
+        <p>보고서 · 인수인계서 · 발표자료 등</p>
+        <div class="bot"><div class="counts"><span>보고서 ${nReport}</span><span>발표용 ${nPres}</span></div><span class="go">펼치기 →</span></div>
       </a>
     </section>
     <section class="minis">
