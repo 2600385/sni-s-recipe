@@ -13,6 +13,7 @@
 - [ ] **옛 창고 정리 (선택)** — 기존 Supabase 계정의 `sni-work-recipe` 프로젝트는 더 이상 안 씀. 원할 때 대시보드에서 삭제.
 
 ## 현재 구성
+- 자동 접속: GitHub Actions `Keep Supabase awake`가 3일마다 창고에 접속해 일시정지를 막음. 저장소에 60일 넘게 변경이 없으면 GitHub이 이 작업을 멈추니, 메일이 오면 Actions 탭에서 Enable 누르기.
 - 주소: https://sni-recipe.vercel.app (main에 올리면 Vercel이 자동 배포)
 - 창고: Supabase `sni's recipe` (다있소와 같은 새 계정)
 - 다있소는 별개 툴. 창고·로그인·배포 모두 따로.
