@@ -234,7 +234,7 @@ body.is-pocket .bg .blob { opacity: .7; }
 .pocket-side .search input { min-height: 48px; }
 .secret-pill { flex: none; }
 .pocket-side .search input { box-shadow: 0 8px 20px rgba(10, 90, 143, .10); }
-.secret-pill { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 20px; border: 2px solid #C9D5E2; background: rgba(255, 255, 255, .8); color: #4C5D6E; font-size: 14px; font-weight: 700; }
+.secret-pill { text-decoration: none; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 20px; border: 2px solid #C9D5E2; background: rgba(255, 255, 255, .8); color: #4C5D6E; font-size: 14px; font-weight: 700; }
 .secret-pill.on { border-color: var(--navy); background: var(--navy); color: #FFFFFF; }
 .candy { min-height: 46px; filter: drop-shadow(0 4px 0 rgba(10, 90, 143, .14)); }
 .candy:hover { transform: translateY(-4px) rotate(-3deg); }
@@ -438,6 +438,8 @@ select.field-input { appearance: auto; }
 .flipping .nwand-y { animation-duration: .22s; animation-delay: -.11s; }
 .book-cap { margin-top: 18px; font-size: 15px; color: var(--plum-ink); }
 .notes-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; }
+.notes-tools .search { margin-left: auto; }
+.notes-tools .secret-pill { min-height: 48px; }
 .doc-row.fly-out { animation: notefly .55s cubic-bezier(.3, 1.4, .5, 1) both; }
 
 /* ---------- 시크릿 서랍 화면 ---------- */

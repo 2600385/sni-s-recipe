@@ -179,14 +179,6 @@ function renderHome() {
         <div class="bot"><div class="counts"><span>보고서 ${nReport}</span><span>발표용 ${nPres}</span></div><span class="go">펼치기 →</span></div>
       </a>
     </section>
-    <section class="minis">
-      <a href="#/secret" class="mini rise r4">
-        <span class="t">${LOCK}시크릿 서랍</span>
-        <span class="s">화면을 보여줄 때 숨겨야 하는 툴과 기록</span>
-        <span class="l">${state.secret ? '열려 있어요 · 보기' : '비밀번호로 열기'}</span>
-      </a>
-      <button type="button" class="add-tile rise r5" data-act="add">＋ 새 재료 넣기<small>툴 · 링크 · 표준멘트 · 보고서 · 발표자료 무엇이든</small></button>
-    </section>
   </div>`;
 }
 
@@ -443,6 +435,7 @@ function renderNotes() {
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E2E5C" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
         <input id="nq" type="search" placeholder="제목으로 찾기 (예: 인수인계, 월례)" value="${esc(state.noteQ)}">
       </div>
+      <a href="#/secret" class="secret-pill">${LOCK}시크릿 서랍</a>
     </div>
     <div class="sub-tabs" id="sub-tabs"></div>
     <section style="display:flex;flex-direction:column;gap:10px">
