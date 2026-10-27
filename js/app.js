@@ -403,6 +403,38 @@ function docRow(d) {
   </div>`;
 }
 
+// 레시피 노트: 한 장씩 보이는 보고서 카드
+function noteCard(d) {
+  const t = NOTE_TABS[d.tab];
+  const sub = t && t.subs[d.sub] ? t.subs[d.sub] : '';
+  const open = d.url
+    ? `<a class="nc-open" href="${esc(d.url)}" target="_blank" rel="noopener">열기</a>`
+    : '<span class="nc-open disabled" aria-disabled="true">링크 준비 중</span>';
+  return `<article class="nc-wrap"><div class="note-card t-${esc(d.tab || 'etc')}">
+    <div class="nc-top"><span class="nc-tab">${t ? t.label : '기록'}</span>${kindTag(d.kind)}</div>
+    <h3 class="nc-title">${esc(d.title)}</h3>
+    <div class="nc-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="nc-meta">${esc([sub, d.date || '날짜 미정'].filter(Boolean).join(' · '))}</div>
+    <div class="nc-acts">${open}${manageBtns(d)}</div>
+  </div></article>`;
+}
+
+// 카드가 책 한가운데에서 미니 책으로 튀어나와 제자리로 내려앉게 출발점을 잡는다
+function launchFromBook(box) {
+  const book = document.querySelector('.book');
+  if (!book) return;
+  const s = book.getBoundingClientRect();
+  const b = box.getBoundingClientRect();
+  const cx = s.left + s.width / 2 - b.left;
+  const cy = s.top + s.height / 2 - b.top;
+  box.querySelectorAll('.nc-wrap').forEach((el, i) => {
+    el.style.setProperty('--fx', Math.round(cx - (el.offsetLeft + el.offsetWidth / 2)) + 'px');
+    el.style.setProperty('--fy', Math.round(cy - (el.offsetTop + el.offsetHeight / 2)) + 'px');
+    el.style.animationDelay = (0.35 + i * 0.08).toFixed(2) + 's';
+    el.classList.add('pop');
+  });
+}
+
 function renderNotes() {
   app.innerHTML = `<div class="wrap notes-screen">
     ${topbar(true)}
@@ -437,7 +469,7 @@ function renderNotes() {
     <div class="sub-tabs" id="sub-tabs"></div>
     <section style="display:flex;flex-direction:column;gap:10px">
       <div class="result-label" id="result-label"></div>
-      <div class="doc-list" id="doc-list"></div>
+      <div class="note-grid" id="doc-list"></div>
     </section>
     <button type="button" class="notes-add" data-act="add" data-section="note">＋ 새 기록 넣기</button>
   </div>`;
@@ -483,8 +515,8 @@ function paintNotes(fly) {
   const label = tab === 'all' ? '전체' : NOTE_TABS[tab].label + (sub === 'all' ? '' : ' · ' + NOTE_TABS[tab].subs[sub]);
   document.getElementById('result-label').textContent = `${label}${q ? ` · "${state.noteQ.trim()}" 검색` : ''} · ${list.length}개`;
   const box = document.getElementById('doc-list');
-  box.innerHTML = list.length ? list.map(docRow).join('') : '<div class="doc-empty">해당하는 기록이 없어요.</div>';
-  if (fly) box.querySelectorAll('.doc-row').forEach((row, i) => { row.classList.add('fly-out'); row.style.animationDelay = (0.45 + i * 0.07).toFixed(2) + 's'; });
+  box.innerHTML = list.length ? list.map(noteCard).join('') : '<div class="doc-empty">해당하는 기록이 없어요.</div>';
+  if (fly) launchFromBook(box);
 }
 
 function renderSecret() {
