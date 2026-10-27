@@ -1,6 +1,6 @@
 (function () {
 const db = window.SNIData;
-const { POCKETS, FTYPES, TOOL_KINDS, NOTE_KINDS, NOTE_TABS } = db;
+const { SOURCES, POCKETS, FTYPES, TOOL_KINDS, NOTE_KINDS, NOTE_TABS } = db;
 
 // 이름이 바뀌면 여기만 고친다
 const NAME = { full: '스니의 업무 레시피', short: '업무 레시피', eyebrow: "SNI'S WORK RECIPE" };
@@ -38,6 +38,7 @@ const ICONS = {
   PDF: 'M7 3h7l5 5v13H7zM14 3v5h5M10 16h6M10 12h3',
   IMG: 'M3 5h18v14H3zM3 15l5-5 4 4 3-3 6 6M15.5 8.5h0',
   MENT: 'M4 5h16v11H9l-5 4zM8 9h8M8 12h5',
+  FILE: 'M7 3h7l5 5v13H7zM14 3v5h5',
   BD: 'M4 4h11l5 5v11H4zM15 4v5h5M7 13h10M7 16h6M7 9h5',
   PPT: 'M4 5h16v11H4zM12 16v4M8 20h8M8 12V9M12 12V7M16 12v-2',
   DOCX: 'M7 3h7l5 5v13H7zM14 3v5h5M9.5 12l1.2 5 1.3-4 1.3 4 1.2-5'
@@ -58,7 +59,7 @@ const bear = (size, cls = '') => `<svg class="bear ${cls}" width="${size}" heigh
   <path d="M45 88q5 4 10 0" fill="none" stroke="#0B2E45" stroke-width="2.4" stroke-linecap="round"/>
   <ellipse cx="28" cy="80" rx="5" ry="3" fill="#FF9FB8" opacity=".7"/><ellipse cx="72" cy="80" rx="5" ry="3" fill="#FF9FB8" opacity=".7"/>
 </svg>`;
-const KIND_LABEL = { HTML: 'HTML', BD: 'BD', URL: 'URL', LINK: '링크', PDF: 'PDF', IMG: '이미지', MENT: '표준멘트', PPT: 'PPT', DOCX: 'DOCX' };
+const KIND_LABEL = { FILE: '파일', HTML: 'HTML', BD: 'BD', URL: 'URL', LINK: '링크', PDF: 'PDF', IMG: '이미지', MENT: '표준멘트', PPT: 'PPT', DOCX: 'DOCX' };
 const icon = (kind, size, color) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[kind] || ICONS.URL}"/></svg>`;
 const kindTag = (kind) => `<span class="kind k-${kind}">${KIND_LABEL[kind] || kind}</span>`;
 const pocketLabel = (id) => (POCKETS.find((p) => p.id === id) || {}).label || id;
@@ -68,7 +69,7 @@ const noteMeta = (d) => {
 };
 const findItem = (id) => state.items.concat(state.secret || []).find((x) => x.id === id);
 const manageBtns = (d) => `<button type="button" class="mini-btn" data-edit="${d.id}" aria-label="${esc(d.title)} 고치기">${EDIT}</button><button type="button" class="mini-btn del" data-del="${d.id}" aria-label="${esc(d.title)} 지우기">${TRASH}</button>`;
-const isFileKind = (k) => k === 'PDF' || k === 'IMG' || k === 'PPT' || k === 'DOCX' || k === 'BD';
+const isFileKind = (k) => k === 'FILE' || k === 'PDF' || k === 'IMG' || k === 'PPT' || k === 'DOCX' || k === 'BD';
 
 function toast(msg) {
   const el = document.createElement('div');
@@ -186,8 +187,13 @@ function renderHome() {
 // ---------- 툴 주머니 ----------
 const FLY = [[300, -50, 34], [180, 40, 0], [60, -25, 48], [-60, 30, 10], [-180, -40, 40], [-300, 55, 4], [120, -35, 30], [-120, 45, 8], [80, -40, 20], [-80, 40, 0]];
 
-const matchPurpose = (d, p) => !p || (d.pockets || []).includes(p);
-const matchType = (d, f) => !f || (f === 'mine' ? d.mine : d.kind === f);
+const matchPurpose = (d, p) => !p || (p === 'sni' ? !!d.mine : !d.mine);
+const matchType = (d, f) => {
+  if (!f || f === 'all') return true;
+  if (f === 'URL') return d.kind === 'URL' || d.kind === 'HTML';
+  if (f === 'PDF') return d.kind === 'PDF';
+  return (d.pockets || []).includes(f);
+};
 
 // 지금 꺼낼 툴. null이면 아직 아무것도 안 고른 상태
 function pocketList() {
@@ -227,17 +233,14 @@ function renderPocket() {
     </div>
     <div class="pocket-tools">
       <div class="prow">
-        <div class="crow"><span class="clabel">어디에 쓸까</span><div class="balls" id="balls"></div></div>
-        <div class="specials"><span id="making"></span></div>
-      </div>
-      <div class="prow">
-        <div class="crow crow-scroll"><span class="clabel">어떤 재료</span><div class="candies" id="candies"></div></div>
+        <div class="crow"><span class="clabel">어디 자료?</span><div class="candies" id="balls"></div></div>
         <div class="search">
           <label for="pq" class="sr-only">툴 검색</label>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A5A8F" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
           <input id="pq" type="search" placeholder="툴 이름으로 찾기" value="${esc(state.pq)}">
         </div>
       </div>
+      <div class="crow crow-scroll"><span class="clabel">어떤 걸 찾아?</span><div class="candies" id="candies"></div></div>
     </div>
     <div class="tiles" id="tiles"></div>
     <div class="detail" id="detail" aria-live="polite"></div>
@@ -256,19 +259,17 @@ function renderPocket() {
 function paintCandies() {
   const tools = state.items.filter((d) => d.section === 'tool');
   const off = !!state.pq.trim() || state.secretView;
-  document.getElementById('balls').innerHTML = POCKETS.map((p, i) => {
-    const on = !off && p.id === state.purpose;
-    const n = tools.filter((d) => matchPurpose(d, p.id) && matchType(d, state.ftype)).length;
-    return `<button type="button" class="ball b${i + 1}${on ? ' on' : ''}" aria-pressed="${on}" data-purpose="${p.id}"><span class="lbl">${p.label.replace(' ', '<br>')}</span><span class="cnt">${n}</span></button>`;
-  }).join('');
-  const candy = (f, i) => {
-    const on = !off && f.id === state.ftype;
-    const n = tools.filter((d) => matchPurpose(d, state.purpose) && matchType(d, f.id)).length;
-    const mine = f.id === 'mine';
-    return `<button type="button" class="candy c${i + 1}${mine ? ' glow' : ''}${on ? ' on' : ''}" aria-pressed="${on}" data-ftype="${f.id}"><span class="wr-l" aria-hidden="true"></span><span class="body">${mine ? `<svg class="tw" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="${STAR}" fill="#B9A6F2"/></svg>` : ''}<span>${f.label}</span><span class="cnt">${n}</span></span><span class="wr-r" aria-hidden="true"></span></button>`;
+  const deco = {
+    dw: '<span class="ears" aria-hidden="true"></span>',
+    sni: '<svg class="crown" width="22" height="14" viewBox="0 0 22 14" aria-hidden="true"><path d="M2 12L1 3l5 4 5-6 5 6 5-4-1 9z" fill="#FFD66B" stroke="#C9871E" stroke-width="1.4" stroke-linejoin="round"/></svg>'
   };
-  document.getElementById('making').innerHTML = candy(FTYPES.find((f) => f.id === 'mine'), 0);
-  document.getElementById('candies').innerHTML = FTYPES.filter((f) => f.id !== 'mine').map((f, i) => candy(f, i + 1)).join('');
+  const candy = (id, label, n, on, cls, attr) => `<button type="button" class="candy ${cls}${on ? ' on' : ''}" aria-pressed="${on}" ${attr}="${id}"><span class="wr-l" aria-hidden="true"></span><span class="body">${deco[id] || ''}<span>${label}</span><span class="cnt">${n}</span></span><span class="wr-r" aria-hidden="true"></span></button>`;
+  document.getElementById('balls').innerHTML = SOURCES.map((p) => candy(p.id, p.label,
+    tools.filter((d) => matchPurpose(d, p.id) && matchType(d, state.ftype)).length,
+    !off && p.id === state.purpose, 'src src-' + p.id, 'data-purpose')).join('');
+  document.getElementById('candies').innerHTML = FTYPES.map((f, i) => candy(f.id, f.label,
+    tools.filter((d) => matchPurpose(d, state.purpose) && matchType(d, f.id)).length,
+    !off && f.id === state.ftype, 'c' + (i % 7 + 1), 'data-ftype')).join('');
 }
 
 function paintTiles() {
@@ -522,10 +523,10 @@ function openSheet(section, edit) {
       <div class="f" id="f-file"><label for="add-file">파일</label><input id="add-file" name="file" type="file"></div>
       <div class="f" id="f-body"><label for="add-body">멘트 내용</label><textarea id="add-body" name="body" class="field-input" placeholder="[원장님 반응] …&#10;[대응 멘트] …"></textarea></div>
       <div class="f" id="f-desc"><label for="add-desc">한 줄 설명</label><input id="add-desc" name="desc" class="field-input" type="text" placeholder="언제, 어떻게 쓰는 툴인지"></div>
-      <fieldset id="f-pockets"><legend>어디에 쓸까 (여러 개 가능)</legend>
+      <fieldset id="f-pockets"><legend>어떤 자료인지 (여러 개 가능)</legend>
         <div class="opts">${POCKETS.map((p) => `<label><input type="checkbox" name="pockets" value="${p.id}"> ${p.label}</label>`).join('')}</div>
       </fieldset>
-      <label id="f-mine" class="opts"><span><input type="checkbox" name="mine" checked> 내가 만든 거예요 (스니's making에도 넣기)</span></label>
+      <label id="f-mine" class="opts"><span><input type="checkbox" name="mine" checked> 스니자료예요 (내가 만든 것 · 빼면 DW자료)</span></label>
       <div class="f" id="f-cat"><label for="add-cat">분류</label><select id="add-cat" name="cat" class="field-input">${noteOpts}</select></div>
       <div class="f" id="f-date"><label for="add-date">날짜</label><input id="add-date" name="date" class="field-input" type="text" placeholder="예: 2026.10"></div>
       <p class="note" id="f-sensitive">거래처 실명, 동료 평가가 들어간 문서는 파일 대신 사내 드라이브 링크로 넣어주세요.</p>
