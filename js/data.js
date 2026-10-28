@@ -6,7 +6,7 @@
 const SOURCES = [
   { id: 'all', label: '전체' },
   { id: 'dw', label: 'DW 공유자료' },
-  { id: 'sni', label: '스니 제작자료' }
+  { id: 'sni', label: '내 자료' }
 ];
 
 // 2줄 자료 유형 (items.kind)
@@ -23,7 +23,7 @@ const POCKETS = [
   { id: 'propose', label: '제안용' },
   { id: 'manage', label: '관리용' },
   { id: 'ref', label: '업무참고용' },
-  { id: 'edu', label: '교육용' }
+  { id: 'edu', label: '교육자료' }
 ];
 
 const TOOL_KINDS = [

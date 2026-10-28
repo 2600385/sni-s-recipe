@@ -559,7 +559,7 @@ function openSheet(section, edit) {
       <fieldset id="f-pockets"><legend>자료 용도 (여러 개 가능)</legend>
         <div class="opts">${POCKETS.map((p) => `<label><input type="checkbox" name="pockets" value="${p.id}"> ${p.label}</label>`).join('')}</div>
       </fieldset>
-      <label id="f-mine" class="opts"><span><input type="checkbox" name="mine" checked> 스니 제작자료예요 (빼면 DW 공유자료)</span></label>
+      <label id="f-mine" class="opts"><span><input type="checkbox" name="mine" checked> 내 자료예요 (빼면 DW 공유자료)</span></label>
       <div class="f" id="f-cat"><label for="add-cat">분류</label><select id="add-cat" name="cat" class="field-input">${noteOpts}</select></div>
       <div class="f" id="f-date"><label for="add-date">날짜</label><input id="add-date" name="date" class="field-input" type="text" placeholder="예: 2026.10"></div>
       <p class="note" id="f-sensitive">거래처 실명, 동료 평가가 들어간 문서는 파일 대신 사내 드라이브 링크로 넣어주세요.</p>
