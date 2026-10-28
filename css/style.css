@@ -417,24 +417,34 @@ select.field-input { appearance: auto; }
 .big .n { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 700; color: var(--plum); background: var(--pink-soft); border-radius: 12px; padding: 1px 9px; }
 .big.on { background: var(--plum); color: #FFFFFF; }
 .big.on .n { background: #FFFFFF; }
-/* 연필 탭: 지우개 · 흰 몸통 · 깎은 심 */
-.big-tabs { gap: 12px 54px; padding-left: 16px; }
-.pencil { --pc: #B0477A; --pc-soft: #F7D3E3; position: relative; min-height: 50px; padding: 0 18px 0 16px; border-radius: 4px; background: #FFFFFF;
-  box-shadow: inset 0 5px 0 var(--pc-soft), inset 0 -5px 0 var(--pc-soft), 0 6px 0 rgba(142, 46, 92, .12); color: var(--ink); font-size: 20px;
-  transition: transform .18s cubic-bezier(.3, 1.6, .5, 1); }
-.pencil::before { content: ""; position: absolute; left: -16px; top: 0; bottom: 0; width: 17px; border-radius: 10px 0 0 10px;
-  background: linear-gradient(90deg, #FFB7CF 0 55%, #D5D0DA 55% 62%, #EDEAF0 62% 72%, #D5D0DA 72% 100%); box-shadow: 0 6px 0 rgba(142, 46, 92, .12); }
-.pencil::after { content: ""; position: absolute; right: -28px; top: 0; bottom: 0; width: 29px;
-  background: linear-gradient(90deg, #F7DDBF 0 64%, var(--pc) 64%); clip-path: polygon(0 0, 100% 50%, 0 100%); }
-.pencil:hover { transform: translateY(-3px) rotate(-1deg); }
-.pencil.on { background: var(--pc); color: #FFFFFF; box-shadow: inset 0 5px 0 rgba(255, 255, 255, .25), inset 0 -5px 0 rgba(0, 0, 0, .08), 0 6px 0 rgba(142, 46, 92, .18); transform: translateY(-3px) rotate(-2deg); }
-.pencil.on .n { color: var(--pc); }
-.p-report { --pc: #3F6FD1; --pc-soft: #DCE6FB; }
-.p-report .n { color: #2B4C8C; background: #E3ECFD; }
-.p-pres { --pc: #C9781B; --pc-soft: #FBE6C8; }
-.p-pres .n { color: #8A5A00; background: #FFF1C2; }
-.sub { display: inline-flex; align-items: center; min-height: 42px; padding: 0 16px; border-radius: 21px; border: 2px solid #F3D3E3; background: #FFFFFF; color: #6E1F45; font-size: 15px; font-weight: 500; }
-.sub.on { border-color: var(--plum); background: #FDF3F8; font-weight: 700; }
+/* 연필 탭: 가는 파스텔 연필. 고르면 몸통이 그 연필 색으로 은은하게 물든다 */
+.big-tabs { gap: 12px 40px; padding-left: 14px; }
+.pencil {
+  --pc: #B9A3E3; --pc-soft: #EFE8FB; --pc-ink: #5E4596;
+  position: relative; min-height: 42px; padding: 0 14px 0 14px; gap: 8px; border-radius: 3px;
+  background: linear-gradient(180deg, #FFFFFF 0 70%, #F7F5FA 70% 100%);
+  box-shadow: inset 0 3px 0 var(--pc-soft), 0 2px 0 rgba(61, 68, 80, .06), 0 8px 18px rgba(61, 68, 80, .08);
+  color: var(--ink-soft); font-size: 17px; transition: transform .2s cubic-bezier(.3, 1.6, .5, 1), background .2s;
+}
+.pencil::before {
+  content: ""; position: absolute; left: -13px; top: 0; bottom: 0; width: 14px; border-radius: 8px 0 0 8px;
+  background: linear-gradient(90deg, #FFC9DA 0 52%, #E6E2EC 52% 60%, #F7F5FA 60% 68%, #E6E2EC 68% 100%);
+}
+.pencil::after {
+  content: ""; position: absolute; right: -22px; top: 0; bottom: 0; width: 23px;
+  background: linear-gradient(90deg, #F8E7D2 0 66%, var(--pc) 66%); clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+.pencil .n { font-family: 'Noto Sans KR', sans-serif; font-size: 12px; font-weight: 700; color: var(--pc-ink); background: var(--pc-soft); border-radius: 10px; padding: 0 8px; }
+.pencil:hover { transform: translateY(-2px); }
+.pencil.on { background: linear-gradient(180deg, var(--pc-soft) 0 70%, #FFFFFF 70% 100%); color: var(--pc-ink); box-shadow: inset 0 3px 0 var(--pc), 0 2px 0 rgba(61, 68, 80, .06), 0 10px 20px rgba(61, 68, 80, .12); transform: translateY(-3px); }
+.pencil.on .n { background: #FFFFFF; }
+.p-report { --pc: #8DB8EE; --pc-soft: #E6F0FD; --pc-ink: #2F5F9E; }
+.p-pres { --pc: #F4B184; --pc-soft: #FDEBDD; --pc-ink: #A65A22; }
+.p-memo { --pc: #7FD3B4; --pc-soft: #E2F6EE; --pc-ink: #2E7D61; }
+/* 세부 분류: 툴 주머니 칩과 같은 결 */
+.sub { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 18px; border: 1.5px solid #FFFFFF; background: rgba(255, 255, 255, .75); color: var(--ink-soft); font-size: 14px; font-weight: 700; }
+.sub:hover { background: #FFFFFF; }
+.sub.on { background: #FFFFFF; color: var(--plum); border-color: rgba(176, 71, 122, .55); box-shadow: 0 0 0 1.5px rgba(176, 71, 122, .35), 0 4px 10px rgba(61, 68, 80, .08); }
 .result-label { font-size: 14px; color: var(--plum-ink); }
 .doc-list { border-radius: 28px; overflow: hidden; background: #FFFFFF; box-shadow: 0 12px 30px rgba(142, 46, 92, .10); }
 .doc-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 18px 22px; border-top: 1px solid #F4E6EE; animation: rise .35s ease-out both; }
@@ -516,6 +526,14 @@ select.field-input { appearance: auto; }
 .note-card::after { content: ""; position: absolute; top: 0; right: 0; width: 28px; height: 28px; background: linear-gradient(225deg, transparent 50%, #F6DCE8 50%); border-bottom-left-radius: 6px; }
 .note-card.t-report { --band: #9DBBEA; }
 .note-card.t-pres { --band: #F2B97A; }
+.note-card.t-memo { --band: #8FD9BD; }
+.nc-lock { margin-left: auto; display: inline-flex; color: #B0477A; }
+.nc-lock svg { width: 14px; height: 14px; }
+.note-card.is-locked .nc-lines i { background: repeating-linear-gradient(90deg, #EFE6EC 0 6px, transparent 6px 9px); }
+.nc-open.locked { gap: 4px; border: 0; background: #F3E3EB; color: #8E2E5C; cursor: pointer; }
+.nc-open.locked:hover { background: #EBD2DF; color: #8E2E5C; }
+.nc-open.locked svg { width: 12px; height: 12px; }
+.unlock-sheet { max-width: 380px; }
 .nc-top { display: flex; align-items: center; gap: 6px; padding-right: 18px; }
 .nc-tab { font-size: 12px; font-weight: 700; color: var(--plum-muted); }
 .nc-title { margin: 0; font-size: 14px; font-weight: 700; line-height: 1.4; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: keep-all; }
@@ -573,8 +591,9 @@ select.field-input { appearance: auto; }
   .note-grid { gap: 12px; }
   .note-grid .nc-wrap { width: calc(50% - 6px); max-width: 168px; }
   .doc-row { padding: 16px; gap: 10px 14px; }
-  .big { min-height: 46px; padding: 0 12px; font-size: 18px; gap: 6px; }
-  .big-tabs { gap: 12px 50px; }
+  .pencil { font-size: 15px; min-height: 38px; padding: 0 10px; gap: 5px; }
+  .big-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 36px; padding: 0 24px 0 14px; }
+  .big-tabs .pencil { justify-content: space-between; }
   .swirl-box { margin-top: 80px; }
   .crow:not(.crow-scroll) .clabel { width: 100%; }
   .crow-scroll { flex-direction: column; align-items: flex-start; gap: 6px; }

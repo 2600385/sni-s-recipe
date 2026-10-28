@@ -41,9 +41,11 @@ const NOTE_KINDS = [
   { id: 'DOCX', label: '문서 파일' }
 ];
 
+const ORG = { team: '신전팀', office: '사무소', division: '사업부' };
 const NOTE_TABS = {
-  report: { label: '보고서', subs: { handover: '인수인계서', feedback: '월별 피드백', daily: '일일보고', etc: '기타 보고서' } },
-  pres: { label: '발표용', subs: { team: '신사업팀 발표', monthly: '사무소 월례회의', inner: '내근회의', contest: '경진대회·외부' } }
+  report: { label: '보고서', subs: ORG },
+  pres: { label: '발표자료', subs: ORG },
+  memo: { label: '개인 노트', subs: {} }
 };
 
 const SAMPLE = [
@@ -56,18 +58,18 @@ const SAMPLE = [
   { id: 't7', section: 'tool', title: '예시 · 심평원 업무포털', kind: 'URL', url: '', mine: false, pockets: [], desc: '저장해 둔 외부 사이트 예시입니다. 실제 주소로 바꿔 넣으세요.' },
   { id: 't8', section: 'tool', title: '예시 · 일만사 사업 지침', kind: 'PDF', url: '', mine: false, pockets: ['ref'], desc: '저장해 둔 PDF 자료 예시입니다. 실제 파일로 바꿔 넣으세요.' },
   { id: 't10', section: 'tool', title: '예시 · 일만사 제안 BD', kind: 'PDF', url: '', mine: false, pockets: ['propose'], desc: '원장님께 드리는 일만사 소개 BD 예시입니다. 실제 파일로 바꿔 넣으세요.' },
-  { id: 'n1', section: 'note', title: '웰체크를 통한 일만사 청구 TIP', kind: 'PPT', tab: 'pres', sub: 'contest', date: '2026.06', url: '' },
-  { id: 'n2', section: 'note', title: '7월 복기 · 8월 목표', kind: 'PPT', tab: 'pres', sub: 'monthly', date: '2026.07', url: '' },
-  { id: 'n3', section: 'note', title: '7월 웰체크 현황 · 8월 방향', kind: 'PPT', tab: 'pres', sub: 'inner', date: '2026.07', url: '' },
-  { id: 'n4', section: 'note', title: '경인1~4 GAP 분석 보고서', kind: 'DOCX', tab: 'report', sub: 'etc', date: '', url: '' },
-  { id: 'n5', section: 'note', title: '예시 · 경인1 인수인계서', kind: 'LINK', tab: 'report', sub: 'handover', date: '', url: '' },
-  { id: 'n6', section: 'note', title: '예시 · 월별 피드백', kind: 'LINK', tab: 'report', sub: 'feedback', date: '', url: '' },
-  { id: 'n7', section: 'note', title: '예시 · 일일보고 (월 묶음)', kind: 'LINK', tab: 'report', sub: 'daily', date: '', url: '' }
+  { id: 'n1', section: 'note', title: '웰체크를 통한 일만사 청구 TIP', kind: 'PPT', tab: 'pres', sub: 'team', date: '2026.06', url: '' },
+  { id: 'n2', section: 'note', title: '7월 복기 · 8월 목표', kind: 'PPT', tab: 'pres', sub: 'office', date: '2026.07', url: '' },
+  { id: 'n3', section: 'note', title: '7월 웰체크 현황 · 8월 방향', kind: 'PPT', tab: 'pres', sub: 'office', date: '2026.07', url: '' },
+  { id: 'n4', section: 'note', title: '경인1~4 GAP 분석 보고서', kind: 'DOCX', tab: 'report', sub: 'division', date: '', url: '' },
+  { id: 'n5', section: 'note', title: '예시 · 경인1 인수인계서', kind: 'LINK', tab: 'report', sub: 'office', date: '', url: '' },
+  { id: 'n6', section: 'note', title: '예시 · 월별 피드백', kind: 'LINK', tab: 'report', sub: 'office', date: '', url: '' },
+  { id: 'n7', section: 'note', title: '예시 · 일일보고 (월 묶음)', kind: 'LINK', tab: 'memo', sub: '', date: '', url: '' }
 ];
 
 const SAMPLE_SECRET = [
   { id: 's1', section: 'tool', title: '예시 · 시크릿 툴', kind: 'URL', url: '', mine: true, pockets: [], secret: true, desc: '원장님 앞에서 화면을 띄울 때 보이면 안 되는 툴 예시입니다.' },
-  { id: 's2', section: 'note', title: '예시 · 내부 복기 메모', kind: 'LINK', tab: 'report', sub: 'etc', date: '', url: '', secret: true }
+  { id: 's2', section: 'note', title: '예시 · 내부 복기 메모', kind: 'LINK', tab: 'report', sub: 'division', date: '', url: '', secret: true }
 ];
 
 // ---------- 예시 모드 (미리보기용) ----------
@@ -84,6 +86,7 @@ const demo = {
   async signOut() { signedIn = false; },
   lockSecret() {},
   async listItems() { return items.slice(); },
+  async verifyCode(code) { if (!code) throw new Error('코드를 넣어주세요.'); },
   async unlockSecret(password) {
     if (!password) throw new Error('비밀번호를 넣어주세요.');
     return secretItems.slice();
@@ -91,6 +94,7 @@ const demo = {
   async addItem(item, file) {
     const row = Object.assign({ id: 'x' + Date.now() }, item);
     if (file) row.url = URL.createObjectURL(file);
+    if (row.lock) { await sealItem(row, row.lockCode); row.locked = true; row.sealed = row.url; row.url = ''; }
     (row.secret ? secretItems : items).unshift(row);
     return row;
   },
@@ -120,11 +124,52 @@ function setSecretHeader(pw) {
   else delete sb.rest.headers['x-secret-pw'];
 }
 
+// ---------- 잠금 (링크를 코드로 암호화) ----------
+const te = new TextEncoder();
+const b64 = (u8) => btoa(String.fromCharCode(...u8));
+const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+async function lockKey(code, salt) {
+  const base = await crypto.subtle.importKey('raw', te.encode(code), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 150000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function seal(payload, code) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await lockKey(code, salt), te.encode(JSON.stringify(payload))));
+  return 'enc1:' + [salt, iv, ct].map(b64).join(':');
+}
+async function unseal(sealed, code) {
+  const [salt, iv, ct] = sealed.slice(5).split(':').map(unb64);
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, await lockKey(code, salt), ct);
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+// 잠긴 항목을 풀어 { id: { url, filePath } } 로 돌려준다
+async function unsealItems(list, code) {
+  const out = {};
+  for (const d of list.filter((x) => x.locked)) {
+    try { out[d.id] = await unseal(d.sealed, code); } catch (e) { /* 다른 코드로 잠긴 항목은 건너뜀 */ }
+  }
+  if (sb) {
+    const paths = Object.values(out).filter((x) => x.filePath).map((x) => x.filePath);
+    if (paths.length) {
+      const { data } = await sb.storage.from(BUCKET).createSignedUrls(paths, 3600);
+      (data || []).forEach((x) => Object.values(out).forEach((o) => { if (o.filePath === x.path) o.url = x.signedUrl; }));
+    }
+  }
+  return out;
+}
+async function sealItem(d, code) {
+  d.url = await seal({ url: d.url || '', filePath: d.filePath || '' }, code);
+  d.filePath = '';
+  return d;
+}
+
 function fromRow(r) {
   return {
     id: r.id, section: r.section, title: r.title, kind: r.kind, url: r.url || '', filePath: r.file_path || '',
     body: r.body || '', desc: r.descr || '', pockets: r.pockets || [], mine: r.mine, tab: r.tab, sub: r.sub,
-    date: r.doc_date || '', secret: r.secret
+    date: r.doc_date || '', secret: r.secret,
+    locked: (r.url || '').startsWith('enc1:'), sealed: (r.url || '').startsWith('enc1:') ? r.url : ''
   };
 }
 function toRow(d) {
@@ -144,6 +189,10 @@ async function withFileUrls(list) {
   const map = {};
   data.forEach((x) => { if (x.signedUrl) map[x.path] = x.signedUrl; });
   list.forEach((d) => { if (d.filePath && map[d.filePath]) d.url = map[d.filePath]; });
+  return list;
+}
+function prepLocked(list) {
+  list.forEach((d) => { if (d.locked) d.url = ''; });
   return list;
 }
 async function upload(file) {
@@ -179,7 +228,11 @@ const live = {
   async listItems() {
     const { data, error } = await sb.from('items').select('*').eq('secret', false).order('created_at', { ascending: false });
     if (error) throw new Error('목록을 불러오지 못했어요.');
-    return withFileUrls(data.map(fromRow));
+    return withFileUrls(prepLocked(data.map(fromRow)));
+  },
+  async verifyCode(code) {
+    const { error } = await sb.auth.signInWithPassword({ email: cfg.email, password: code });
+    if (error) throw new Error(error.status === 429 ? '너무 여러 번 시도했어요. 잠시 뒤에 다시 해주세요.' : '코드가 맞지 않아요.');
   },
   async unlockSecret(password) {
     if (!password) throw new Error('비밀번호를 넣어주세요.');
@@ -191,12 +244,15 @@ const live = {
   async addItem(item, file) {
     const d = Object.assign({}, item);
     if (file) d.filePath = await upload(file);
+    if (d.lock) await sealItem(d, d.lockCode);
     const { error } = await sb.from('items').insert(toRow(d));
     if (error) throw new Error(d.secret ? '시크릿으로 넣으려면 시크릿 서랍을 먼저 열어주세요.' : '저장하지 못했어요. 다시 해주세요.');
   },
   async updateItem(id, item, file, old) {
     const d = Object.assign({}, item);
     if (file) d.filePath = await upload(file);
+    else if (d.filePath === undefined && old && old.locked && old.openFilePath) d.filePath = old.openFilePath;
+    if (d.lock) await sealItem(d, d.lockCode);
     const { error } = await sb.from('items').update(toRow(d)).eq('id', id);
     if (error) throw new Error(d.secret ? '시크릿으로 바꾸려면 시크릿 서랍을 먼저 열어주세요.' : '고치지 못했어요. 다시 해주세요.');
     if (file && old && old.filePath) await sb.storage.from(BUCKET).remove([old.filePath]);
@@ -216,12 +272,13 @@ const signOut = () => impl.signOut();
 const lockSecret = () => impl.lockSecret();
 const listItems = () => impl.listItems();
 const unlockSecret = (pw) => impl.unlockSecret(pw);
+const verifyCode = (code) => impl.verifyCode(code);
 const addItem = (item, file) => impl.addItem(item, file);
 const updateItem = (id, item, file, old) => impl.updateItem(id, item, file, old);
 const deleteItem = (id, old) => impl.deleteItem(id, old);
 
 window.SNIData = {
   SOURCES, POCKETS, FTYPES, TOOL_KINDS, NOTE_KINDS, NOTE_TABS,
-  isDemo, getSession, signIn, signOut, lockSecret, listItems, unlockSecret, addItem, updateItem, deleteItem
+  isDemo, getSession, signIn, signOut, lockSecret, listItems, unlockSecret, verifyCode, unsealItems, addItem, updateItem, deleteItem
 };
 })();

@@ -15,6 +15,8 @@ const state = {
   purpose: '',
   ftype: '',
   use: '',
+  noteCode: '',
+  unsealed: {},
   pq: '',
   secretView: false,
   picked: null,
@@ -408,11 +410,14 @@ function docRow(d) {
 function noteCard(d) {
   const t = NOTE_TABS[d.tab];
   const sub = t && t.subs[d.sub] ? t.subs[d.sub] : '';
-  const open = d.url
-    ? `<a class="nc-open" href="${esc(d.url)}" target="_blank" rel="noopener">열기</a>`
+  const opened = d.locked ? state.unsealed[d.id] : null;
+  const url = d.locked ? (opened && opened.url) : d.url;
+  const open = d.locked && !opened
+    ? `<button type="button" class="nc-open locked" data-act="unlock-notes">${LOCK}잠김</button>`
+    : url ? `<a class="nc-open" href="${esc(url)}" target="_blank" rel="noopener">열기</a>`
     : '<span class="nc-open disabled" aria-disabled="true">준비 중</span>';
-  return `<article class="nc-wrap"><div class="note-card t-${esc(d.tab || 'etc')}">
-    <div class="nc-top"><span class="nc-tab">${t ? t.label : '기록'}</span>${kindTag(d.kind)}</div>
+  return `<article class="nc-wrap"><div class="note-card t-${esc(d.tab || 'etc')}${d.locked ? ' is-locked' : ''}">
+    <div class="nc-top"><span class="nc-tab">${t ? t.label : '기록'}</span>${kindTag(d.kind)}${d.locked ? `<span class="nc-lock" title="잠긴 기록">${LOCK}</span>` : ''}</div>
     <h3 class="nc-title">${esc(d.title)}</h3>
     <div class="nc-lines" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="nc-meta">${esc([sub, d.date || '날짜 미정'].filter(Boolean).join(' · '))}</div>
@@ -441,7 +446,7 @@ function renderNotes() {
     ${topbar(true)}
     <section class="notes-hero">
       <h1 class="notes-title">레시피 노트</h1>
-      <p>내가 직접 쓴 보고서와 발표 자료를 모아둔 노트예요.</p>
+      <p>보고서, 발표자료, 개인 노트를 한곳에 모아둔 노트예요.</p>
       <div class="book-stage" id="book">
         <div class="book-aura" aria-hidden="true"></div>
         <div class="book-fx" id="book-fx" aria-hidden="true"></div>
@@ -506,12 +511,13 @@ function paintNotes(fly) {
     return `<button type="button" class="big pencil p-${id}${on ? ' on' : ''}" aria-pressed="${on}" data-tab="${id}"><span>${label}</span><span class="n">${notes.filter((d) => inTab(d, id)).length}</span></button>`;
   }).join('');
   const subBox = document.getElementById('sub-tabs');
-  if (tab === 'all') subBox.innerHTML = '';
+  const hasSubs = tab !== 'all' && Object.keys(NOTE_TABS[tab].subs).length > 0;
+  if (!hasSubs) subBox.innerHTML = '';
   else {
     const subs = [['all', '전체']].concat(Object.entries(NOTE_TABS[tab].subs));
     subBox.innerHTML = subs.map(([id, label]) => `<button type="button" class="sub${id === sub ? ' on' : ''}" aria-pressed="${id === sub}" data-sub="${id}">${label}</button>`).join('');
   }
-  subBox.hidden = tab === 'all';
+  subBox.hidden = !hasSubs;
   const list = notes.filter((d) => inTab(d, tab) && (sub === 'all' || d.sub === sub) && (!q || d.title.toLowerCase().includes(q)));
   const label = tab === 'all' ? '전체' : NOTE_TABS[tab].label + (sub === 'all' ? '' : ' · ' + NOTE_TABS[tab].subs[sub]);
   document.getElementById('result-label').textContent = `${label}${q ? ` · "${state.noteQ.trim()}" 검색` : ''} · ${list.length}개`;
@@ -540,7 +546,9 @@ function renderSecret() {
 // ---------- 새 재료 넣기 ----------
 function openSheet(section, edit) {
   if (edit) section = edit.section;
-  const noteOpts = Object.entries(NOTE_TABS).map(([t, v]) => `<optgroup label="${v.label}">${Object.entries(v.subs).map(([s, l]) => `<option value="${t}/${s}">${l}</option>`).join('')}</optgroup>`).join('');
+  const noteOpts = Object.entries(NOTE_TABS).map(([t, v]) => Object.keys(v.subs).length
+    ? `<optgroup label="${v.label}">${Object.entries(v.subs).map(([s, l]) => `<option value="${t}/${s}">${v.label} · ${l}</option>`).join('')}</optgroup>`
+    : `<option value="${t}/">${v.label}</option>`).join('');
   sheetRoot.innerHTML = `<div class="sheet-back" id="sheet-back">
     <form class="sheet" id="add-form" role="dialog" aria-modal="true" aria-labelledby="add-title" novalidate>
       <h2 id="add-title">${edit ? '재료 고치기' : '새 재료 넣기'}</h2>
@@ -562,6 +570,8 @@ function openSheet(section, edit) {
       <label id="f-mine" class="opts"><span><input type="checkbox" name="mine" checked> 내 자료예요 (빼면 DW 공유자료)</span></label>
       <div class="f" id="f-cat"><label for="add-cat">분류</label><select id="add-cat" name="cat" class="field-input">${noteOpts}</select></div>
       <div class="f" id="f-date"><label for="add-date">날짜</label><input id="add-date" name="date" class="field-input" type="text" placeholder="예: 2026.10"></div>
+      <div class="f" id="f-lock"><label class="opts"><span><input type="checkbox" name="lock" id="add-lock"> 잠금 (코드를 넣어야 링크가 열려요)</span></label>
+        <div class="f" id="f-lockcode" hidden><label for="add-lockcode">잠금 코드</label><input id="add-lockcode" class="field-input" type="password" inputmode="numeric" autocomplete="off"></div></div>
       <p class="note" id="f-sensitive">거래처 실명, 동료 평가가 들어간 문서는 파일 대신 사내 드라이브 링크로 넣어주세요.</p>
       <div class="error" id="add-err" role="alert" hidden></div>
       <div class="btns"><button type="submit" class="go-btn">${edit ? '고치기 완료' : '쇽! 넣기'}</button><button type="button" class="ghost-btn" data-act="close-sheet">취소</button></div>
@@ -589,11 +599,15 @@ function openSheet(section, edit) {
     document.getElementById('f-cat').hidden = isTool;
     document.getElementById('f-date').hidden = isTool;
     document.getElementById('f-sensitive').hidden = isTool;
+    document.getElementById('f-lock').hidden = isTool;
+    document.getElementById('f-lockcode').hidden = isTool || !document.getElementById('add-lock').checked || !!state.noteCode;
     document.getElementById('add-file').accept = { PDF: '.pdf', IMG: 'image/*', BD: '.pdf,.ppt,.pptx,image/*', PPT: '.ppt,.pptx', DOCX: '.doc,.docx,.hwp' }[kind] || '';
   };
   form.querySelectorAll('input[name=section]').forEach((r) => r.addEventListener('change', sync));
+  document.getElementById('add-lock').addEventListener('change', sync);
   sync();
   if (edit) {
+    document.getElementById('add-lock').checked = !!edit.locked;
     const k = form.querySelector(`input[name=kind][value="${edit.kind}"]`);
     if (k) k.checked = true;
     document.getElementById('add-name').value = edit.title;
@@ -638,13 +652,23 @@ function openSheet(section, edit) {
     } else {
       [item.tab, item.sub] = String(fd.get('cat')).split('/');
       item.date = (fd.get('date') || '').trim();
+      if (fd.get('lock')) {
+        const code = state.noteCode || document.getElementById('add-lockcode').value.trim();
+        if (!code) return showErr('잠금 코드를 넣어주세요.');
+        if (!state.noteCode) {
+          try { await db.verifyCode(code); } catch (ex) { return showErr(ex.message); }
+          state.noteCode = code;
+        }
+        item.lock = true;
+        item.lockCode = code;
+      }
     }
     try {
       form.querySelector('button[type=submit]').disabled = true;
       if (edit) await db.updateItem(edit.id, item, file, edit);
       else await db.addItem(item, file);
       await reload();
-      if (state.secret) state.secret = await db.unlockSecret(state.secretPw);
+      if (state.noteCode) state.unsealed = await db.unsealItems(state.items, state.noteCode);
       closeSheet();
       toast(edit ? '고쳤어요' : item.secret ? '시크릿 서랍에 쏙 넣었어요' : sec === 'note' ? '레시피 노트에 넣었어요' : '주머니에 쏙 넣었어요');
       route();
@@ -657,6 +681,40 @@ function openSheet(section, edit) {
 }
 function closeSheet() { sheetRoot.innerHTML = ''; }
 
+// 잠긴 기록 열기: 코드 한 번이면 창을 닫거나 레시피를 덮기 전까지 모두 열린다
+function openUnlock() {
+  sheetRoot.innerHTML = `<div class="sheet-back" id="sheet-back">
+    <form class="sheet unlock-sheet" id="unlock-form" role="dialog" aria-modal="true" aria-labelledby="unlock-title" novalidate>
+      <h2 id="unlock-title">${LOCK} 잠긴 기록 열기</h2>
+      <p class="note">코드를 한 번 넣으면 이 창을 닫기 전까지 잠긴 기록이 모두 열려요.</p>
+      <div class="f"><label for="unlock-code">코드</label><input id="unlock-code" class="field-input" type="password" inputmode="numeric" autocomplete="off"></div>
+      <div class="error" id="unlock-err" role="alert" hidden></div>
+      <div class="btns"><button type="submit" class="go-btn">열기</button><button type="button" class="ghost-btn" data-act="close-sheet">취소</button></div>
+    </form>
+  </div>`;
+  const f = document.getElementById('unlock-form');
+  const input = document.getElementById('unlock-code');
+  input.focus();
+  f.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const err = document.getElementById('unlock-err');
+    const code = input.value.trim();
+    f.querySelector('button[type=submit]').disabled = true;
+    try {
+      await db.verifyCode(code);
+      state.noteCode = code;
+      state.unsealed = await db.unsealItems(state.items, code);
+      closeSheet();
+      toast('잠긴 기록을 열었어요');
+      paintNotes(false);
+    } catch (ex) {
+      err.textContent = ex.message || '코드가 맞지 않아요.';
+      err.hidden = false;
+      f.querySelector('button[type=submit]').disabled = false;
+    }
+  });
+}
+
 // ---------- 이벤트 ----------
 document.addEventListener('click', async (e) => {
   const t = e.target.closest('[data-act],[data-purpose],[data-ftype],[data-use],[data-pick],[data-copy],[data-tab],[data-sub],[data-edit],[data-del]');
@@ -666,7 +724,14 @@ document.addEventListener('click', async (e) => {
   }
   if (t.dataset.edit) {
     const d = findItem(t.dataset.edit);
-    if (d) openSheet(d.section, d);
+    if (!d) return;
+    if (d.locked) {
+      const o = state.unsealed[d.id];
+      if (!o) { openUnlock(); return; }
+      openSheet(d.section, Object.assign({}, d, { url: o.filePath ? o.url : o.url, filePath: o.filePath, openFilePath: o.filePath }));
+      return;
+    }
+    openSheet(d.section, d);
     return;
   }
   if (t.dataset.del) {
@@ -708,6 +773,7 @@ document.addEventListener('click', async (e) => {
   } else {
     const act = t.dataset.act;
     if (act === 'stir') stir({});
+    else if (act === 'unlock-notes') openUnlock();
     else if (act === 'secret-view') stir({ secretView: !state.secretView, picked: null });
     else if (act === 'flip') flipBook();
     else if (act === 'add') openSheet(t.dataset.section);
@@ -720,7 +786,7 @@ document.addEventListener('click', async (e) => {
       route();
     } else if (act === 'signout') {
       await db.signOut();
-      Object.assign(state, { items: [], secret: null, secretPw: '', purpose: '', ftype: '', use: '', pq: '', secretView: false, picked: null });
+      Object.assign(state, { noteCode: '', unsealed: {}, items: [], secret: null, secretPw: '', purpose: '', ftype: '', use: '', pq: '', secretView: false, picked: null });
       go('enter');
     }
   }
