@@ -14,6 +14,7 @@ const state = {
   secret: null, // 잠금 해제 전에는 null
   purpose: '',
   ftype: '',
+  use: '',
   pq: '',
   secretView: false,
   picked: null,
@@ -41,6 +42,7 @@ const ICONS = {
   FILE: 'M7 3h7l5 5v13H7zM14 3v5h5',
   BD: 'M4 4h11l5 5v11H4zM15 4v5h5M7 13h10M7 16h6M7 9h5',
   PPT: 'M4 5h16v11H4zM12 16v4M8 20h8M8 12V9M12 12V7M16 12v-2',
+  DOC: 'M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6',
   DOCX: 'M7 3h7l5 5v13H7zM14 3v5h5M9.5 12l1.2 5 1.3-4 1.3 4 1.2-5'
 };
 // 곰 셰프: 곰 얼굴 + 요리사 모자
@@ -59,7 +61,7 @@ const bear = (size, cls = '') => `<svg class="bear ${cls}" width="${size}" heigh
   <path d="M45 88q5 4 10 0" fill="none" stroke="#0B2E45" stroke-width="2.4" stroke-linecap="round"/>
   <ellipse cx="28" cy="80" rx="5" ry="3" fill="#FF9FB8" opacity=".7"/><ellipse cx="72" cy="80" rx="5" ry="3" fill="#FF9FB8" opacity=".7"/>
 </svg>`;
-const KIND_LABEL = { FILE: '파일', HTML: 'HTML', BD: 'BD', URL: 'URL', LINK: '링크', PDF: 'PDF', IMG: '이미지', MENT: '표준멘트', PPT: 'PPT', DOCX: 'DOCX' };
+const KIND_LABEL = { DOC: '문서', FILE: '파일', HTML: 'HTML', BD: 'BD', URL: 'URL', LINK: '링크', PDF: 'PDF', IMG: '이미지', MENT: '표준멘트', PPT: 'PPT', DOCX: 'DOCX' };
 const icon = (kind, size, color) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[kind] || ICONS.URL}"/></svg>`;
 const kindTag = (kind) => `<span class="kind k-${kind}">${KIND_LABEL[kind] || kind}</span>`;
 const pocketLabel = (id) => (POCKETS.find((p) => p.id === id) || {}).label || id;
@@ -69,7 +71,7 @@ const noteMeta = (d) => {
 };
 const findItem = (id) => state.items.concat(state.secret || []).find((x) => x.id === id);
 const manageBtns = (d) => `<button type="button" class="mini-btn" data-edit="${d.id}" aria-label="${esc(d.title)} 고치기">${EDIT}</button><button type="button" class="mini-btn del" data-del="${d.id}" aria-label="${esc(d.title)} 지우기">${TRASH}</button>`;
-const isFileKind = (k) => k === 'FILE' || k === 'PDF' || k === 'IMG' || k === 'PPT' || k === 'DOCX' || k === 'BD';
+const isFileKind = (k) => k === 'DOC' || k === 'FILE' || k === 'PDF' || k === 'IMG' || k === 'PPT' || k === 'DOCX' || k === 'BD';
 
 function toast(msg) {
   const el = document.createElement('div');
@@ -187,13 +189,10 @@ function renderHome() {
 // ---------- 툴 주머니 ----------
 const FLY = [[300, -50, 34], [180, 40, 0], [60, -25, 48], [-60, 30, 10], [-180, -40, 40], [-300, 55, 4], [120, -35, 30], [-120, 45, 8], [80, -40, 20], [-80, 40, 0]];
 
-const matchPurpose = (d, p) => !p || (p === 'sni' ? !!d.mine : !d.mine);
-const matchType = (d, f) => {
-  if (!f || f === 'all') return true;
-  if (f === 'URL') return d.kind === 'URL' || d.kind === 'HTML';
-  if (f === 'PDF') return d.kind === 'PDF';
-  return (d.pockets || []).includes(f);
-};
+const matchPurpose = (d, p) => !p || p === 'all' || (p === 'sni' ? !!d.mine : !d.mine);
+const matchType = (d, f) => !f || d.kind === f || (f === 'DOC' && (d.kind === 'FILE' || d.kind === 'DOCX' || d.kind === 'PPT'));
+const matchUse = (d, u) => !u || (d.pockets || []).includes(u);
+const matchAll = (d, o) => matchPurpose(d, o.purpose) && matchType(d, o.ftype) && matchUse(d, o.use);
 
 // 지금 꺼낼 툴. null이면 아직 아무것도 안 고른 상태
 function pocketList() {
@@ -201,8 +200,8 @@ function pocketList() {
   const tools = state.items.filter((d) => d.section === 'tool');
   const q = state.pq.trim().toLowerCase();
   if (q) return tools.filter((d) => (d.title + ' ' + (d.desc || '') + ' ' + (d.body || '')).toLowerCase().includes(q));
-  if (!state.purpose && !state.ftype) return null;
-  return tools.filter((d) => matchPurpose(d, state.purpose) && matchType(d, state.ftype));
+  if (!state.purpose && !state.ftype && !state.use) return null;
+  return tools.filter((d) => matchAll(d, state));
 }
 
 function renderPocket() {
@@ -240,7 +239,8 @@ function renderPocket() {
           <input id="pq" type="search" placeholder="툴 이름으로 찾기" value="${esc(state.pq)}">
         </div>
       </div>
-      <div class="crow crow-scroll"><span class="clabel">어떤 걸 찾아?</span><div class="candies" id="candies"></div></div>
+      <div class="crow crow-scroll"><span class="clabel">자료 유형</span><div class="candies small" id="candies"></div></div>
+      <div class="crow crow-scroll"><span class="clabel">자료 용도</span><div class="candies small" id="uses"></div></div>
     </div>
     <div class="tiles" id="tiles"></div>
     <div class="detail" id="detail" aria-live="polite"></div>
@@ -264,12 +264,13 @@ function paintCandies() {
     sni: '<svg class="crown" width="22" height="14" viewBox="0 0 22 14" aria-hidden="true"><path d="M2 12L1 3l5 4 5-6 5 6 5-4-1 9z" fill="#FFD66B" stroke="#C9871E" stroke-width="1.4" stroke-linejoin="round"/></svg>'
   };
   const candy = (id, label, n, on, cls, attr) => `<button type="button" class="candy ${cls}${on ? ' on' : ''}" aria-pressed="${on}" ${attr}="${id}"><span class="wr-l" aria-hidden="true"></span><span class="body">${deco[id] || ''}<span>${label}</span><span class="cnt">${n}</span></span><span class="wr-r" aria-hidden="true"></span></button>`;
-  document.getElementById('balls').innerHTML = SOURCES.map((p) => candy(p.id, p.label,
-    tools.filter((d) => matchPurpose(d, p.id) && matchType(d, state.ftype)).length,
+  const count = (over) => tools.filter((d) => matchAll(d, Object.assign({}, state, over))).length;
+  document.getElementById('balls').innerHTML = SOURCES.map((p) => candy(p.id, p.label, count({ purpose: p.id }),
     !off && p.id === state.purpose, 'src src-' + p.id, 'data-purpose')).join('');
-  document.getElementById('candies').innerHTML = FTYPES.map((f, i) => candy(f.id, f.label,
-    tools.filter((d) => matchPurpose(d, state.purpose) && matchType(d, f.id)).length,
+  document.getElementById('candies').innerHTML = FTYPES.map((f, i) => candy(f.id, f.label, count({ ftype: f.id }),
     !off && f.id === state.ftype, 'c' + (i % 7 + 1), 'data-ftype')).join('');
+  document.getElementById('uses').innerHTML = POCKETS.map((u, i) => candy(u.id, u.label, count({ use: u.id }),
+    !off && u.id === state.use, 'c' + ((i + 5) % 7 + 1), 'data-use')).join('');
 }
 
 function paintTiles() {
@@ -555,10 +556,10 @@ function openSheet(section, edit) {
       <div class="f" id="f-file"><label for="add-file">파일</label><input id="add-file" name="file" type="file"></div>
       <div class="f" id="f-body"><label for="add-body">멘트 내용</label><textarea id="add-body" name="body" class="field-input" placeholder="[원장님 반응] …&#10;[대응 멘트] …"></textarea></div>
       <div class="f" id="f-desc"><label for="add-desc">한 줄 설명</label><input id="add-desc" name="desc" class="field-input" type="text" placeholder="언제, 어떻게 쓰는 툴인지"></div>
-      <fieldset id="f-pockets"><legend>어떤 자료인지 (여러 개 가능)</legend>
+      <fieldset id="f-pockets"><legend>자료 용도 (여러 개 가능)</legend>
         <div class="opts">${POCKETS.map((p) => `<label><input type="checkbox" name="pockets" value="${p.id}"> ${p.label}</label>`).join('')}</div>
       </fieldset>
-      <label id="f-mine" class="opts"><span><input type="checkbox" name="mine" checked> 스니자료예요 (내가 만든 것 · 빼면 DW자료)</span></label>
+      <label id="f-mine" class="opts"><span><input type="checkbox" name="mine" checked> 스니 제작자료예요 (빼면 DW 공유자료)</span></label>
       <div class="f" id="f-cat"><label for="add-cat">분류</label><select id="add-cat" name="cat" class="field-input">${noteOpts}</select></div>
       <div class="f" id="f-date"><label for="add-date">날짜</label><input id="add-date" name="date" class="field-input" type="text" placeholder="예: 2026.10"></div>
       <p class="note" id="f-sensitive">거래처 실명, 동료 평가가 들어간 문서는 파일 대신 사내 드라이브 링크로 넣어주세요.</p>
@@ -658,7 +659,7 @@ function closeSheet() { sheetRoot.innerHTML = ''; }
 
 // ---------- 이벤트 ----------
 document.addEventListener('click', async (e) => {
-  const t = e.target.closest('[data-act],[data-purpose],[data-ftype],[data-pick],[data-copy],[data-tab],[data-sub],[data-edit],[data-del]');
+  const t = e.target.closest('[data-act],[data-purpose],[data-ftype],[data-use],[data-pick],[data-copy],[data-tab],[data-sub],[data-edit],[data-del]');
   if (!t) {
     if (e.target.id === 'sheet-back') closeSheet();
     return;
@@ -687,8 +688,8 @@ document.addEventListener('click', async (e) => {
     } catch (ex) { toast(ex.message || '지우지 못했어요'); }
     return;
   }
-  if (t.dataset.purpose || t.dataset.ftype) {
-    const key = t.dataset.purpose ? 'purpose' : 'ftype';
+  if (t.dataset.purpose || t.dataset.ftype || t.dataset.use) {
+    const key = t.dataset.purpose ? 'purpose' : t.dataset.ftype ? 'ftype' : 'use';
     const val = t.dataset[key];
     const pq = document.getElementById('pq');
     if (pq) pq.value = '';
@@ -719,7 +720,7 @@ document.addEventListener('click', async (e) => {
       route();
     } else if (act === 'signout') {
       await db.signOut();
-      Object.assign(state, { items: [], secret: null, secretPw: '', purpose: '', ftype: '', pq: '', secretView: false, picked: null });
+      Object.assign(state, { items: [], secret: null, secretPw: '', purpose: '', ftype: '', use: '', pq: '', secretView: false, picked: null });
       go('enter');
     }
   }

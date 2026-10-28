@@ -222,10 +222,13 @@ body.is-pocket .bg .blob { opacity: .7; }
 .crow > .balls, .crow > .candies { flex: 1 1 0; min-width: 0; }
 #balls { padding-top: 12px; }
 /* 어떤 걸 찾아? 7개가 PC에서 한 줄에 들어가도록 조금 작게 */
-#candies .candy .body { padding: 0 11px; font-size: 16px; gap: 6px; min-height: 38px; }
-#candies .candy .cnt { min-width: 20px; height: 20px; font-size: 12px; }
-#candies .candy .wr-l, #candies .candy .wr-r { width: 13px; height: 26px; }
-#candies.candies { gap: 4px 2px; }
+#balls .candy .body { font-size: 19px; min-height: 48px; padding: 0 18px; }
+#balls .candy .cnt { min-width: 24px; height: 24px; font-size: 13px; }
+.candy.src-all { --c: #B9B4C6; }
+.candies.small .candy .body { padding: 0 11px; font-size: 16px; gap: 6px; min-height: 38px; }
+.candies.small .candy .cnt { min-width: 20px; height: 20px; font-size: 12px; }
+.candies.small .candy .wr-l, .candies.small .candy .wr-r { width: 13px; height: 26px; }
+.candies.small { gap: 4px 2px; }
 /* 알사탕: 동그랗고 반짝이는 파스텔 */
 .ball {
   --b1: #FFFFFF; --b2: #FF9FC2; --ink: #7A1E48; position: relative; flex: none; width: 92px; height: 92px; padding: 0; border: 0; border-radius: 50%;
@@ -524,6 +527,9 @@ select.field-input { appearance: auto; }
 .toast { position: fixed; left: 50%; bottom: 28px; translate: -50% 0; z-index: 30; padding: 12px 22px; border-radius: 22px; background: var(--ink); color: #FFFFFF; font-weight: 700; box-shadow: 0 10px 24px rgba(0, 0, 0, .2); animation: rise .3s ease-out both; }
 
 @media (max-width: 600px) {
+  #balls .candy .body { font-size: 15px; min-height: 40px; padding: 0 10px; }
+  #balls .candy .wr-l, #balls .candy .wr-r { width: 10px; }
+  #balls { gap: 10px 0; }
   .note-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .note-card { padding: 18px 12px 12px; }
   .nc-title { font-size: 15px; }
