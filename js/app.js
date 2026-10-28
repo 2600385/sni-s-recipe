@@ -410,7 +410,7 @@ function noteCard(d) {
   const sub = t && t.subs[d.sub] ? t.subs[d.sub] : '';
   const open = d.url
     ? `<a class="nc-open" href="${esc(d.url)}" target="_blank" rel="noopener">열기</a>`
-    : '<span class="nc-open disabled" aria-disabled="true">링크 준비 중</span>';
+    : '<span class="nc-open disabled" aria-disabled="true">준비 중</span>';
   return `<article class="nc-wrap"><div class="note-card t-${esc(d.tab || 'etc')}">
     <div class="nc-top"><span class="nc-tab">${t ? t.label : '기록'}</span>${kindTag(d.kind)}</div>
     <h3 class="nc-title">${esc(d.title)}</h3>
