@@ -217,15 +217,15 @@ body.is-pocket .bg .blob { opacity: .7; }
 .seg-b.on { background: #FFFFFF; color: var(--ink); box-shadow: 0 4px 14px rgba(61, 68, 80, .14); }
 .seg-b.on i { color: var(--navy); }
 /* 유형별 · 용도별 : 리본 사탕 제목 + 점 칩 */
-.rtitle { --rc: #6FCBE6; --rs: rgba(170, 228, 246, .55); --ri: #1E6A84; display: inline-flex; align-items: center; flex: none; filter: drop-shadow(0 3px 0 rgba(61, 68, 80, .08)); }
-.rtitle.t-use { --rc: #F591BC; --rs: rgba(255, 196, 220, .6); --ri: #A23A6B; }
-.rtitle .w { width: 15px; height: 30px; background-color: rgba(255, 255, 255, .85); background-image: repeating-linear-gradient(90deg, var(--rs) 0 2px, rgba(255, 255, 255, 0) 2px 5px); }
+.rtitle { --rc: rgba(111, 203, 230, .75); --rs: rgba(170, 228, 246, .28); --ri: #2A7F9C; display: inline-flex; align-items: center; flex: none; filter: drop-shadow(0 3px 0 rgba(61, 68, 80, .08)); }
+.rtitle.t-use { --rc: rgba(245, 145, 188, .75); --rs: rgba(255, 196, 220, .3); --ri: #B4497C; }
+.rtitle .w { width: 15px; height: 30px; background-color: rgba(255, 255, 255, .55); background-image: repeating-linear-gradient(90deg, var(--rs) 0 2px, rgba(255, 255, 255, 0) 2px 5px); }
 .rtitle .wl { clip-path: polygon(0 0, 100% 36%, 100% 64%, 0 100%, 26% 50%); margin-right: 5px; }
 .rtitle .wr { clip-path: polygon(100% 0, 0 36%, 0 64%, 100% 100%, 74% 50%); margin-left: 5px; }
 .rtitle .bd {
   position: relative; display: grid; place-items: center; height: 36px; padding: 0 16px; border-radius: 13px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .85), rgba(255, 255, 255, .35)), var(--rs);
-  border: 1.5px solid rgba(255, 255, 255, .95); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .6), rgba(255, 255, 255, .15)), var(--rs);
+  border: 1.5px solid rgba(255, 255, 255, .85); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   font-family: 'Jua', sans-serif; font-size: 16px; color: var(--ri); white-space: nowrap;
 }
 .rtitle .bd::before, .rtitle .bd::after { content: ""; position: absolute; top: 50%; width: 8px; height: 22px; translate: 0 -50%; border-radius: 4px; background: var(--rc); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .08); }
@@ -236,8 +236,10 @@ body.is-pocket .bg .blob { opacity: .7; }
 .chip .n { font-size: 12px; font-weight: 700; opacity: .6; }
 .chip.u { border-radius: 20px; background: var(--t); border-color: rgba(255, 255, 255, .9); }
 .chip:hover { transform: translateY(-2px); }
-.chip.on { background: var(--navy); border-color: var(--navy); color: #FFFFFF; }
-.chip.on::before { background: #FFFFFF; }
+/* 고른 칩: 같은 모양에 점 색 테두리만 */
+.chip.on { border-color: var(--k); box-shadow: 0 0 0 1.5px var(--k), 0 4px 12px rgba(61, 68, 80, .12); transform: translateY(-2px); }
+.chip.on::before { width: 10px; height: 10px; }
+.chip.on .n { opacity: .9; }
 .pocket-tools { width: 100%; display: flex; flex-direction: column; gap: 12px; }
 .prow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
 .crow-scroll { flex-wrap: nowrap; }
