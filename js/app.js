@@ -232,15 +232,15 @@ function renderPocket() {
     </div>
     <div class="pocket-tools">
       <div class="prow">
-        <div class="crow"><span class="clabel">어디 자료?</span><div class="candies" id="balls"></div></div>
+        <div class="seg" id="balls" role="group" aria-label="어디 자료?"></div>
         <div class="search">
           <label for="pq" class="sr-only">툴 검색</label>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D4450" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
           <input id="pq" type="search" placeholder="툴 이름으로 찾기" value="${esc(state.pq)}">
         </div>
       </div>
-      <div class="crow crow-scroll"><span class="clabel">자료 유형</span><div class="candies small" id="candies"></div></div>
-      <div class="crow crow-scroll"><span class="clabel">자료 용도</span><div class="candies small" id="uses"></div></div>
+      <div class="crow crow-scroll"><span class="rtitle t-type"><span class="w wl" aria-hidden="true"></span><span class="bd">유형별</span><span class="w wr" aria-hidden="true"></span></span><div class="chips" id="candies"></div></div>
+      <div class="crow crow-scroll"><span class="rtitle t-use"><span class="w wl" aria-hidden="true"></span><span class="bd">용도별</span><span class="w wr" aria-hidden="true"></span></span><div class="chips" id="uses"></div></div>
     </div>
     <div class="tiles" id="tiles"></div>
     <div class="detail" id="detail" aria-live="polite"></div>
@@ -265,12 +265,12 @@ function paintCandies() {
   };
   const candy = (id, label, n, on, cls, attr) => `<button type="button" class="candy ${cls}${on ? ' on' : ''}" aria-pressed="${on}" ${attr}="${id}"><span class="wr-l" aria-hidden="true"></span><span class="body">${deco[id] || ''}<span>${label}</span><span class="cnt">${n}</span></span><span class="wr-r" aria-hidden="true"></span></button>`;
   const count = (over) => tools.filter((d) => matchAll(d, Object.assign({}, state, over))).length;
-  document.getElementById('balls').innerHTML = SOURCES.map((p) => candy(p.id, p.label, count({ purpose: p.id }),
-    !off && p.id === state.purpose, 'src src-' + p.id, 'data-purpose')).join('');
-  document.getElementById('candies').innerHTML = FTYPES.map((f, i) => candy(f.id, f.label, count({ ftype: f.id }),
-    !off && f.id === state.ftype, 'c' + (i % 7 + 1), 'data-ftype')).join('');
-  document.getElementById('uses').innerHTML = POCKETS.map((u, i) => candy(u.id, u.label, count({ use: u.id }),
-    !off && u.id === state.use, 'c' + ((i + 5) % 7 + 1), 'data-use')).join('');
+  const typeColors = ['#F28DB8', '#E8B547', '#5FD3A5', '#7FA8FF', '#B28CFF'];
+  const useColors = [['#F28DB8', '#FFE6F0'], ['#7FA8FF', '#E5EEFF'], ['#E8B547', '#FFF3D6'], ['#5FD3A5', '#DDF6EC']];
+  const chip = (cls, attr, id, label, n, on, style) => `<button type="button" class="chip ${cls}${on ? ' on' : ''}" aria-pressed="${on}" ${attr}="${id}" style="${style}">${label}<span class="n">${n}</span></button>`;
+  document.getElementById('balls').innerHTML = SOURCES.map((p) => `<button type="button" class="seg-b${!off && p.id === state.purpose ? ' on' : ''}" aria-pressed="${!off && p.id === state.purpose}" data-purpose="${p.id}">${p.label}<i>${count({ purpose: p.id })}</i></button>`).join('');
+  document.getElementById('candies').innerHTML = FTYPES.map((f, i) => chip('', 'data-ftype', f.id, f.label, count({ ftype: f.id }), !off && f.id === state.ftype, `--k:${typeColors[i % 5]}`)).join('');
+  document.getElementById('uses').innerHTML = POCKETS.map((u, i) => chip('u', 'data-use', u.id, u.label, count({ use: u.id }), !off && u.id === state.use, `--k:${useColors[i % 4][0]};--t:${useColors[i % 4][1]}`)).join('');
 }
 
 function paintTiles() {
